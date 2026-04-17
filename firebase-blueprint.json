@@ -1,0 +1,123 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "format": "email", "description": "User email address" },
+        "displayName": { "type": "string", "description": "User display name" },
+        "photoURL": { "type": "string", "description": "User profile photo URL" },
+        "role": { "type": "string", "enum": ["admin", "user"], "description": "User role" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Invitation": {
+      "title": "Invitation",
+      "description": "Invitation data",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique invitation ID" },
+        "layoutMode": { "type": "string", "enum": ["traditional", "stories"] },
+        "theme": { "type": "string" },
+        "title": { "type": "string", "description": "Invitation title" },
+        "titleSize": { "type": "string", "enum": ["pequeño", "mediano", "grande"] },
+        "name": { "type": "string" },
+        "nameSize": { "type": "string", "enum": ["pequeño", "mediano", "grande"] },
+        "date": { "type": "string", "description": "Event date (ISO string)" },
+        "coverImage": { "type": "string" },
+        "instagramHashtag": { "type": "string" },
+        "galleryImages": { "type": "array", "items": { "type": "string" } },
+        "rsvpPhone": { "type": "string" },
+        "ceremony": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "address": { "type": "string" },
+            "time": { "type": "string" },
+            "mapUrl": { "type": "string" }
+          }
+        },
+        "reception": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "address": { "type": "string" },
+            "time": { "type": "string" },
+            "mapUrl": { "type": "string" }
+          }
+        },
+        "dressCode": {
+          "type": "object",
+          "properties": {
+            "style": { "type": "string" },
+            "colors": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "musicUrl": { "type": "string" },
+        "gifts": {
+          "type": "object",
+          "properties": {
+            "envelope": { "type": "boolean" },
+            "storeName": { "type": "string" },
+            "storeCode": { "type": "string" },
+            "storeUrl": { "type": "string" }
+          }
+        },
+        "itinerary": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "time": { "type": "string" },
+              "event": { "type": "string" }
+            }
+          }
+        },
+        "guestName": { "type": "string" },
+        "guestCount": { "type": "number" },
+        "guests": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "tickets": { "type": "number" }
+            }
+          }
+        },
+        "primaryColor": { "type": "string" },
+        "accentColor": { "type": "string" },
+        "titleFont": { "type": "string" },
+        "nameFont": { "type": "string" },
+        "bodyFont": { "type": "string" },
+        "gratitudeWords": { "type": "string" },
+        "parentsNames": {
+          "type": "object",
+          "properties": {
+            "mother": { "type": "string" },
+            "father": { "type": "string" }
+          }
+        },
+        "ownerId": { "type": "string", "description": "UID of the invitation owner" },
+        "isPublic": { "type": "boolean", "description": "Whether the invitation is publicly accessible" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last update timestamp" }
+      },
+      "required": ["id", "title", "templateId", "ownerId", "isPublic", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/invitations/{invitationId}": {
+      "schema": "Invitation",
+      "description": "Invitations collection"
+    }
+  }
+}
