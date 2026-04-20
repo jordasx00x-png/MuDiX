@@ -1,12 +1,11 @@
 import { InvitationData, SectionStyle } from '../../lib/types';
 import { cn } from '../../lib/utils';
-import { MapPin, Calendar, Clock, Gift, Mail, CheckCircle2, Heart, Instagram, Camera, Type, Palette, Maximize, AlignLeft, AlignCenter, AlignRight, X, Check, Sparkles, Rocket, Zap, Star, Baby, Shield, TreePine, Footprints, Leaf, Cloud, Moon, Orbit, Dog, Bone, Gamepad2, Trophy, Pickaxe, Sword, Gamepad, User, FastForward, Circle, Square, Box, Crown, Flower, Flower2, ChevronLeft, ChevronRight } from 'lucide-react';
-import { format, differenceInDays, differenceInHours, differenceInMinutes, differenceInSeconds } from 'date-fns';
+import { MapPin, Calendar, Clock, Gift, Mail, CheckCircle2, Heart, Instagram, Camera, Type, Palette, Maximize, AlignLeft, AlignCenter, AlignRight, X, Check, Sparkles, Rocket, Zap, Star, Baby, Shield, TreePine, Footprints, Leaf, Cloud, Moon, Orbit, Dog, Bone, Gamepad2, Trophy, Pickaxe, Sword, Gamepad, User, FastForward, Circle, Square, Box, Crown, Flower, Flower2, ChevronLeft, ChevronRight, Package } from 'lucide-react';
+import { format, differenceInDays, differenceInHours, differenceInMinutes, differenceInSeconds, subDays } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'motion/react';
 import InteractiveRSVP from './InteractiveRSVP';
-import AddToCalendar from './AddToCalendar';
 import MusicPlayer from './MusicPlayer';
 import DressCode from './DressCode';
 import { Editable } from './Editable';
@@ -1349,13 +1348,6 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
               {format(eventDate, "EEEE d 'de' MMMM 'de' yyyy", { locale: es })}
             </motion.p>
             <Countdown targetDate={data.date} />
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1 }}
-            >
-              <AddToCalendar data={data} theme={theme} />
-            </motion.div>
 
             {/* Parents Section */}
             {(data.parentsNames?.mother || data.parentsNames?.father) && (
@@ -1400,13 +1392,6 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
         {/* Wedding Additional Header Info */}
         {isWedding && data.coverImage && (
           <div className="text-center mb-16">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <AddToCalendar data={data} theme={theme} />
-            </motion.div>
 
             {/* Parents Section */}
             {(data.parentsNames?.mother || data.parentsNames?.father) && (
@@ -1687,7 +1672,7 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
           <p className="opacity-80 mb-12 max-w-md mx-auto text-lg">
             Tu presencia es mi mayor regalo, pero si deseas tener un detalle conmigo te comparto algunas ideas:
           </p>
-          <div className="grid sm:grid-cols-2 gap-8">
+          <div className={cn("grid gap-8", (data.gifts?.envelope && data.gifts?.storeName && data.gifts?.traditional) ? "sm:grid-cols-3" : "sm:grid-cols-2")}>
             {data.gifts?.envelope && (
               <motion.div 
                 initial={{ opacity: 0, y: 30 }}
@@ -1709,6 +1694,29 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
                 </motion.div>
                 <h4 className="text-xl font-bold mb-3">Lluvia de sobres</h4>
                 <p className="text-sm opacity-70 leading-relaxed">Es la tradición de regalar dinero en efectivo a la festejada dentro de un sobre el día del evento.</p>
+              </motion.div>
+            )}
+            {data.gifts?.traditional && (
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ type: "spring", bounce: 0.5, delay: 0.1 }}
+                whileHover={{ scale: 1.05, y: -5 }}
+                className={cn("p-8 rounded-3xl border bg-white/5 backdrop-blur-sm transition-all shadow-xl", !theme.accentColor && theme.border)}
+                style={theme.accentColor ? { borderColor: `color-mix(in srgb, ${theme.accentColor}, transparent 70%)` } : {}}
+              >
+                <motion.div
+                  animate={{ y: [0, -5, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                >
+                  <Package 
+                    className={cn("w-10 h-10 mx-auto mb-6", !theme.accentColor && theme.accent)} 
+                    style={theme.accentColor ? { color: theme.accentColor } : {}}
+                  />
+                </motion.div>
+                <h4 className="text-xl font-bold mb-3">Regalo Tradicional</h4>
+                <p className="text-sm opacity-70 leading-relaxed">Puedes traer tu regalo el día del evento. Habrá un espacio especial para recibirlo con mucho cariño.</p>
               </motion.div>
             )}
             {data.gifts?.storeName && (
@@ -1763,7 +1771,19 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
             as="h3"
             className={cn("text-4xl mb-4", !theme.accentColor && theme.accent)}
           />
-          <p className="opacity-80 mb-8">Por favor confirma tu asistencia.</p>
+          <p className="opacity-80 mb-2">Por favor confirma tu asistencia.</p>
+          {data.date && (
+            <p className={cn("text-sm font-bold uppercase tracking-widest mb-8", !theme.accentColor && theme.accent)}
+               style={theme.accentColor ? { color: theme.accentColor } : {}}>
+              Confirmar antes del {(() => {
+                try {
+                  const [year, month, day] = data.date.split('-');
+                  const d = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                  return format(subDays(d, 15), "d 'de' MMMM", { locale: es });
+                } catch { return '...'; }
+              })()}
+            </p>
+          )}
           <InteractiveRSVP data={data} theme={theme} />
         </motion.div>
       </div>

@@ -1255,6 +1255,21 @@ export default function Editor() {
               </div>
 
               <div className="space-y-4">
+                <h3 className="text-lg font-bold text-gray-900 border-b pb-2">Música de Fondo</h3>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">URL de YouTube o Spotify</label>
+                  <input
+                    type="url"
+                    value={data.musicUrl || ''}
+                    onChange={(e) => handleChange(null, 'musicUrl', e.target.value)}
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Pega el link de un video de YouTube o un enlace de Spotify para que se escuche al abrir la invitación.</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
                 <h3 className="text-lg font-bold text-gray-900 border-b pb-2">Galería de Fotos</h3>
                 <input
                   type="file"
@@ -1407,8 +1422,9 @@ export default function Editor() {
                   <div className="w-1/3">
                     <label className="block text-xs font-medium text-gray-500 mb-1 uppercase">Hora</label>
                     <input
-                      type="time"
+                      type="text"
                       value={item.time}
+                      placeholder="Ej. 18:00 hrs"
                       onChange={(e) => handleItineraryChange(index, 'time', e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm"
                     />
@@ -1425,7 +1441,7 @@ export default function Editor() {
                 </div>
               ))}
               <button
-                onClick={() => handleChange(null, 'itinerary', [...data.itinerary, { time: '00:00', event: 'Nuevo Evento' }])}
+                onClick={() => handleChange(null, 'itinerary', [...data.itinerary, { time: '', event: 'Nuevo Evento' }])}
                 className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-600 font-medium hover:border-primary-500 hover:text-primary-600 transition-colors"
               >
                 + Añadir Evento
@@ -1564,6 +1580,19 @@ export default function Editor() {
 
           {activeTab === 'gifts' && (
             <div className="space-y-6">
+              <label className="flex items-center gap-3 p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
+                <input
+                  type="checkbox"
+                  checked={data.gifts.traditional || false}
+                  onChange={(e) => handleChange('gifts', 'traditional', e.target.checked)}
+                  className="w-5 h-5 text-primary-600 rounded focus:ring-primary-500"
+                />
+                <div>
+                  <span className="block font-medium text-gray-900">Regalos Tradicionales</span>
+                  <span className="block text-sm text-gray-500">Mostrar mensaje aceptando regalos físicos en el evento</span>
+                </div>
+              </label>
+
               <label className="flex items-center gap-3 p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
                 <input
                   type="checkbox"

@@ -10,6 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 async function startServer() {
   const app = express();
+  // Ensure we use the proper 'process' global, ignoring any translator mangling
   const PORT = process.env.PORT || 3000;
 
   app.set('trust proxy', true);

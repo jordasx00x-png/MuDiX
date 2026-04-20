@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { InvitationData, SectionStyle } from '../../lib/types';
 import { getTheme, Countdown, FloatingParticles, Confetti, FloatingBalloons, FloatingIcons, WobblyText, KIDS_THEMES, CharacterSticker, DecorativeFrame, XVDecoration, PhotoGallery, GlassCard, RevealText } from './InvitationTemplate';
 import { cn } from '../../lib/utils';
-import { MapPin, Clock, Gift, Mail, CheckCircle2, Heart, Instagram } from 'lucide-react';
-import { format } from 'date-fns';
+import { MapPin, Clock, Gift, Mail, CheckCircle2, Heart, Instagram, Package } from 'lucide-react';
+import { format, subDays } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'motion/react';
 import InteractiveRSVP from './InteractiveRSVP';
-import AddToCalendar from './AddToCalendar';
 import MusicPlayer from './MusicPlayer';
 import DressCode from './DressCode';
 import { Editable } from './Editable';
@@ -41,7 +40,7 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
     data.dressCode ? 'dressCode' : null,
     data.itinerary?.length ? 'itinerary' : null,
     (data.galleryImages?.length || data.instagramHashtag) ? 'gallery' : null,
-    (data.gifts?.envelope || data.gifts?.storeName) ? 'gifts' : null,
+    (data.gifts?.envelope || data.gifts?.storeName || data.gifts?.traditional) ? 'gifts' : null,
     'rsvp'
   ].filter(Boolean) as string[];
 
@@ -123,9 +122,6 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
                     </p>
                   </div>
                   <Countdown targetDate={data.date} />
-                  <div className="mt-4 pointer-events-auto">
-                    <AddToCalendar data={data} theme={theme} />
-                  </div>
                   {(data.parentsNames?.mother || data.parentsNames?.father) && (
                     <div className="mt-6 space-y-3">
                       <div className="space-y-1">
@@ -239,9 +235,6 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
                   {isValidDate ? format(eventDate, "EEEE d 'de' MMMM 'de' yyyy", { locale: es }) : 'Fecha por confirmar'}
                 </p>
                 <Countdown targetDate={data.date} />
-                <div className="mt-4 relative z-50 pointer-events-auto">
-                  <AddToCalendar data={data} theme={theme} />
-                </div>
               </>
             )}
           </motion.div>
@@ -478,6 +471,19 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
                     <p className="text-xs opacity-70">Es la tradición de regalar dinero en efectivo a la festejada dentro de un sobre el día del evento.</p>
                   </div>
                 )}
+                {data.gifts.traditional && (
+                  <div 
+                    className={cn("p-4 rounded-xl border bg-black/20", !theme.accentColor && theme.border)}
+                    style={theme.accentColor ? { borderColor: theme.accentColor } : {}}
+                  >
+                    <Package 
+                      className={cn("w-6 h-6 mx-auto mb-2", !theme.accentColor && theme.accent)} 
+                      style={theme.accentColor ? { color: theme.accentColor } : {}}
+                    />
+                    <h4 className="font-bold mb-1">Regalo Tradicional</h4>
+                    <p className="text-xs opacity-70">Puedes traer tu regalo el día del evento. Habrá un espacio especial para recibirlo con mucho cariño.</p>
+                  </div>
+                )}
                 {data.gifts.storeName && (
                   <div 
                     className={cn("p-4 rounded-xl border bg-black/20", !theme.accentColor && theme.border)}
@@ -521,7 +527,19 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
             >
               RSVP
             </h3>
-            <p className="opacity-80 mb-8">Por favor confirma tu asistencia.</p>
+            <p className="opacity-80 mb-2">Por favor confirma tu asistencia.</p>
+            {data.date && (
+              <p className={cn("text-xs font-bold uppercase tracking-widest mb-8", !theme.accentColor && theme.accent)}
+                 style={theme.accentColor ? { color: theme.accentColor } : {}}>
+                Confirmar antes del {(() => {
+                  try {
+                    const [year, month, day] = data.date.split('-');
+                    const d = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                    return format(subDays(d, 15), "d 'de' MMMM", { locale: es });
+                  } catch { return '...'; }
+                })()}
+              </p>
+            )}
             <InteractiveRSVP data={data} theme={theme} />
           </motion.div>
         );

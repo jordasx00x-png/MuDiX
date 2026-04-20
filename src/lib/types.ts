@@ -45,6 +45,7 @@ export interface InvitationData {
   musicUrl?: string;
   gifts: {
     envelope: boolean;
+    traditional?: boolean;
     storeName: string;
     storeCode: string;
     storeUrl: string;
