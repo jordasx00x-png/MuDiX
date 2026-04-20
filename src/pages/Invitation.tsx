@@ -203,14 +203,11 @@ export default function Invitation() {
           <p className="text-zinc-400 mb-8">{error}</p>
           <div className="flex flex-col gap-3">
             <button 
-              onClick={() => setRetryCount(prev => prev + 1)}
+              onClick={() => window.location.reload()}
               className="px-8 py-3 bg-white text-black rounded-full font-bold hover:scale-105 transition-transform"
             >
-              Intentar de nuevo
+              Recargar página
             </button>
-            <a href="/" className="text-zinc-500 hover:text-white transition-colors text-sm">
-              Ir al inicio
-            </a>
           </div>
         </motion.div>
       </div>
@@ -228,12 +225,12 @@ export default function Invitation() {
             animate={{ opacity: 1, y: 0 }}
             className="mt-8 flex flex-col items-center gap-4"
           >
-            <p className="text-zinc-500 text-xs max-w-xs">La conexión está tardando un poco. Si no carga pronto, intenta reintentar.</p>
+            <p className="text-zinc-500 text-xs max-w-xs">La conexión está tardando un poco. Si no carga pronto, intenta recargar la página.</p>
             <button 
-              onClick={() => setRetryCount(prev => prev + 1)}
+              onClick={() => window.location.reload()}
               className="px-6 py-2 bg-white/10 hover:bg-white/20 rounded-full text-xs transition-colors border border-white/10"
             >
-              Reintentar Carga
+              Recargar página
             </button>
           </motion.div>
         )}

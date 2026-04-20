@@ -34,7 +34,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
       return (
         <div className="min-h-screen bg-red-50 flex flex-col items-center justify-center p-8">
           <div className="bg-white p-8 rounded-xl shadow-lg max-w-2xl w-full">
-            <h1 className="text-2xl font-bold text-red-600 mb-4">Something went wrong</h1>
+            <h1 className="text-2xl font-bold text-red-600 mb-4">¡Ups! Algo salió mal</h1>
             <div className="bg-gray-100 p-4 rounded overflow-auto mb-4">
               <pre className="text-sm text-red-800 whitespace-pre-wrap">
                 {this.state.error?.toString()}
@@ -47,9 +47,9 @@ export class ErrorBoundary extends React.Component<Props, State> {
             </div>
             <button
               className="mt-6 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-              onClick={() => window.location.href = '/'}
+              onClick={() => window.location.reload()}
             >
-              Go to Home
+              Recargar página
             </button>
           </div>
         </div>
