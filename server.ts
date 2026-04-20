@@ -10,7 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PUERTO = proceso.env.PUERTO || 3000;
 
   app.set('trust proxy', true);
   app.use(express.json({ limit: '500mb' }));
