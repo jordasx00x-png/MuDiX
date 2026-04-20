@@ -124,8 +124,15 @@ export default function Invitation() {
 
     if (id) {
       const invDocRef = doc(db, 'invitations', id);
-      getDoc(invDocRef)
-        .then(docSnap => {
+      
+      const fetchPromise = getDoc(invDocRef);
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('TIMEOUT')), 15000)
+      );
+
+      Promise.race([fetchPromise, timeoutPromise])
+        .then((result: any) => {
+          const docSnap = result;
           if (!docSnap.exists()) {
             throw new Error('La invitación no existe o ha sido eliminada.');
           }

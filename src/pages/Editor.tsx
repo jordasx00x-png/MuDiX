@@ -485,7 +485,7 @@ export default function Editor() {
     });
   };
 
-  const compressImage = (file: File, maxWidth = 400): Promise<string> => {
+  const compressImage = (file: File, maxWidth = 1080, quality = 0.7): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -507,8 +507,7 @@ export default function Editor() {
           const ctx = canvas.getContext('2d');
           ctx?.drawImage(img, 0, 0, width, height);
           
-          // Ultra-aggressive compression to JPEG with 0.2 quality for base64 storage
-          resolve(canvas.toDataURL('image/jpeg', 0.2));
+          resolve(canvas.toDataURL('image/jpeg', quality));
         };
         img.onerror = (error) => reject(error);
       };
@@ -519,14 +518,15 @@ export default function Editor() {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, isCover: boolean, index?: number) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Check file size before processing (limit to 5MB for initial upload)
       if (file.size > 5 * 1024 * 1024) {
         toast.error('La imagen es demasiado grande. Por favor elige una de menos de 5MB.');
         return;
       }
 
       try {
-        const result = await compressImage(file);
+        const targetMaxWidth = isCover ? 1080 : 800;
+        const targetQuality = isCover ? 0.8 : 0.7;
+        const result = await compressImage(file, targetMaxWidth, targetQuality);
         
         if (isCover) {
           handleChange(null, 'coverImage', result);
