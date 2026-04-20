@@ -524,8 +524,8 @@ export default function Editor() {
       }
 
       try {
-        const targetMaxWidth = isCover ? 1080 : 800;
-        const targetQuality = isCover ? 0.8 : 0.7;
+        const targetMaxWidth = isCover ? 800 : 600;
+        const targetQuality = isCover ? 0.7 : 0.6;
         const result = await compressImage(file, targetMaxWidth, targetQuality);
         
         if (isCover) {

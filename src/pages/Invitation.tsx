@@ -103,7 +103,7 @@ export default function Invitation() {
       if (!data && !error) {
         setLoadingTimeout(true);
       }
-    }, 10000); // Increased to 10s for slower connections
+    }, 15000); // Increased to 15s for slower mobile connections downloading high-res base64
     return () => clearTimeout(timer);
   }, [data, error, retryCount]);
 
@@ -127,7 +127,7 @@ export default function Invitation() {
       
       const fetchPromise = getDoc(invDocRef);
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('TIMEOUT')), 15000)
+        setTimeout(() => reject(new Error('TIMEOUT')), 30000)
       );
 
       Promise.race([fetchPromise, timeoutPromise])
