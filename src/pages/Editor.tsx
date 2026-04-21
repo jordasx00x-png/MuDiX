@@ -408,7 +408,7 @@ export default function Editor() {
       }
     };
 
-    const timer = setTimeout(autoSave, 15000);
+    const timer = setTimeout(autoSave, 3000);
     return () => clearTimeout(timer);
   }, [data, isDirty, user]);
 
@@ -564,7 +564,12 @@ export default function Editor() {
     return `${currentOrigin}/invitation/${data.id}`;
   };
 
-  const handleCopyLink = (url: string) => {
+  const handleCopyLink = async (url: string) => {
+    if (isDirty) {
+      // Force an immediate save before copying the link so the guest actually exists in the database
+      // when they try to open it.
+      await handleSave();
+    }
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
