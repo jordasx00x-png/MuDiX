@@ -1515,20 +1515,41 @@ export default function Editor() {
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">Número de Pases</label>
+                            <div className="flex items-center justify-between mb-1">
+                              <label className="block text-xs font-medium text-gray-700">Número de Pases</label>
+                              <label className="flex items-center gap-1.5 cursor-pointer">
+                                <input 
+                                  type="checkbox"
+                                  checked={guest.tickets === 0}
+                                  onChange={(e) => {
+                                    setIsDirty(true);
+                                    setData(prev => {
+                                      const newGuests = [...(prev.guests || [])];
+                                      newGuests[index] = { ...newGuests[index], tickets: e.target.checked ? 0 : 1 };
+                                      return { ...prev, guests: newGuests };
+                                    });
+                                  }}
+                                  className="w-3 h-3 text-primary-600 rounded border-gray-300"
+                                />
+                                <span className="text-[10px] text-gray-500 font-medium uppercase">Entrada Libre</span>
+                              </label>
+                            </div>
                             <input
                               type="number"
                               min="1"
-                              value={guest.tickets}
+                              disabled={guest.tickets === 0}
+                              value={guest.tickets === 0 ? '' : guest.tickets}
+                              placeholder={guest.tickets === 0 ? 'Sin límite de pases' : ''}
                               onChange={(e) => {
                                 setIsDirty(true);
                                 setData(prev => {
                                   const newGuests = [...(prev.guests || [])];
-                                  newGuests[index] = { ...newGuests[index], tickets: parseInt(e.target.value) || 1 };
+                                  const val = parseInt(e.target.value);
+                                  newGuests[index] = { ...newGuests[index], tickets: isNaN(val) ? 1 : val };
                                   return { ...prev, guests: newGuests };
                                 });
                               }}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm disabled:bg-gray-100 disabled:text-gray-400"
                             />
                           </div>
                           
