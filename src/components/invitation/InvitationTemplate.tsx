@@ -1450,18 +1450,20 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
               className={cn("text-4xl md:text-5xl font-serif font-bold mb-8 whitespace-pre-line", !theme.accentColor && theme.accent)}
             />
             
-            <div className="inline-flex items-center justify-center gap-4 px-8 py-4 rounded-full bg-white/5 border border-white/10 shadow-inner">
-              <span className="text-sm uppercase tracking-wider opacity-80">Pases asignados:</span>
-              <span 
-                className={cn("text-xl md:text-2xl font-bold", !theme.accentColor && theme.accent)}
-                style={theme.accentColor ? { color: theme.accentColor } : {}}
-              >
-                {data.guestCount === 0 ? 'Sin límite' : data.guestCount}
-              </span>
-              <span className="text-sm uppercase tracking-wider opacity-80">
-                {data.guestCount === 0 ? '(Entrada Libre)' : (data.guestCount === 1 ? 'Persona' : 'Personas')}
-              </span>
-            </div>
+            {data.guestCount !== undefined && data.guestCount > 0 && (
+              <div className="inline-flex items-center justify-center gap-4 px-8 py-4 rounded-full bg-white/5 border border-white/10 shadow-inner">
+                <span className="text-sm uppercase tracking-wider opacity-80">Pases asignados:</span>
+                <span 
+                  className={cn("text-xl md:text-2xl font-bold", !theme.accentColor && theme.accent)}
+                  style={theme.accentColor ? { color: theme.accentColor } : {}}
+                >
+                  {data.guestCount}
+                </span>
+                <span className="text-sm uppercase tracking-wider opacity-80">
+                  {data.guestCount === 1 ? 'Persona' : 'Personas'}
+                </span>
+              </div>
+            )}
           </GlassCard>
         )}
 
