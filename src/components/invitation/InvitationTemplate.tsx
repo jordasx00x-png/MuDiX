@@ -1444,6 +1444,7 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
               value={data.guestName}
               isEditing={isEditing}
               onUpdate={onUpdate}
+              multiline={true}
               style={data.styles?.guestName}
               as="p"
               className={cn("text-4xl md:text-5xl font-serif font-bold mb-8 whitespace-pre-line", !theme.accentColor && theme.accent)}
