@@ -45,7 +45,7 @@ function PersonalizedLoading({ data }: { data: InvitationData }) {
             className="mb-12"
           >
             <p className="text-xs md:text-sm font-light tracking-[0.2em] uppercase mb-3 opacity-50">Especialmente para</p>
-            <p className="text-3xl md:text-4xl font-serif font-medium text-white/90">{data.guestName}</p>
+            <p className="text-3xl md:text-4xl font-serif font-medium text-white/90 whitespace-pre-line">{data.guestName}</p>
           </motion.div>
         )}
 

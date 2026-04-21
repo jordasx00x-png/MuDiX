@@ -1496,8 +1496,8 @@ export default function Editor() {
                         <div className="flex-1 space-y-3">
                           <div>
                             <label className="block text-xs font-medium text-gray-700 mb-1">Nombre (Ej. Familia Pérez o Juan López)</label>
-                            <input
-                              type="text"
+                            <textarea
+                              rows={2}
                               value={guest.name}
                               onChange={(e) => {
                                 setIsDirty(true);
@@ -1507,7 +1507,7 @@ export default function Editor() {
                                   return { ...prev, guests: newGuests };
                                 });
                               }}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm resize-none"
                               placeholder="Nombre del invitado o familia"
                             />
                           </div>

@@ -1446,7 +1446,7 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
               onUpdate={onUpdate}
               style={data.styles?.guestName}
               as="p"
-              className={cn("text-4xl md:text-5xl font-serif font-bold mb-8", !theme.accentColor && theme.accent)}
+              className={cn("text-4xl md:text-5xl font-serif font-bold mb-8 whitespace-pre-line", !theme.accentColor && theme.accent)}
             />
             
             <div className="inline-flex items-center justify-center gap-4 px-8 py-4 rounded-full bg-white/5 border border-white/10 shadow-inner">
