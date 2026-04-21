@@ -1499,11 +1499,14 @@ export default function Editor() {
                             <textarea
                               rows={2}
                               value={guest.name}
+                              autoCapitalize="words"
                               onChange={(e) => {
                                 setIsDirty(true);
                                 setData(prev => {
                                   const newGuests = [...(prev.guests || [])];
-                                  newGuests[index] = { ...newGuests[index], name: e.target.value };
+                                  // Capitaliza la primera letra de cada palabra
+                                  const capitalizedName = e.target.value.replace(/(?:^|\s|\n)\S/g, match => match.toUpperCase());
+                                  newGuests[index] = { ...newGuests[index], name: capitalizedName };
                                   return { ...prev, guests: newGuests };
                                 });
                               }}

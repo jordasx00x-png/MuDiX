@@ -93,7 +93,14 @@ export function Editable({ id, value, isEditing, onUpdate, style, className, as:
                   {multiline ? (
                     <textarea 
                       value={tempValue}
-                      onChange={(e) => setTempValue(e.target.value)}
+                      autoCapitalize={id === 'guestName' ? "words" : undefined}
+                      onChange={(e) => {
+                        let val = e.target.value;
+                        if (id === 'guestName' || id === 'name') {
+                          val = val.replace(/(?:^|\s|\n)\S/g, match => match.toUpperCase());
+                        }
+                        setTempValue(val);
+                      }}
                       className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none resize-none text-gray-900"
                       rows={3}
                     />
@@ -101,7 +108,14 @@ export function Editable({ id, value, isEditing, onUpdate, style, className, as:
                     <input 
                       type="text" 
                       value={tempValue}
-                      onChange={(e) => setTempValue(e.target.value)}
+                      autoCapitalize={id === 'guestName' ? "words" : undefined}
+                      onChange={(e) => {
+                        let val = e.target.value;
+                        if (id === 'guestName' || id === 'name') {
+                          val = val.replace(/(?:^|\s|\n)\S/g, match => match.toUpperCase());
+                        }
+                        setTempValue(val);
+                      }}
                       className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-gray-900"
                     />
                   )}
