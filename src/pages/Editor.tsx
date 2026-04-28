@@ -1837,76 +1837,57 @@ export default function Editor() {
               {/* This is the card to be captured */}
               <div 
                 ref={qrRef}
-                className="w-full max-w-[400px] aspect-[9/16] relative flex flex-col items-center justify-between text-white text-center overflow-hidden shrink-0 shadow-2xl"
+                className="w-full max-w-[420px] aspect-[4/5.5] relative flex flex-col items-center text-white text-center overflow-hidden shrink-0 shadow-2xl mx-auto"
                 style={{ 
                   backgroundColor: qrColor,
-                  backgroundImage: `linear-gradient(180deg, color-mix(in srgb, ${qrColor} 40%, white) 0%, ${qrColor} 100%)`
+                  backgroundImage: `linear-gradient(135deg, color-mix(in srgb, ${qrColor} 20%, white) 0%, ${qrColor} 40%, color-mix(in srgb, ${qrColor} 40%, black) 100%)`
                 }}
               >
-                <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-between">
+                <div className="absolute inset-0 pt-10 pb-8 px-8 flex flex-col items-center justify-between h-full">
                   {/* Header */}
-                  <div className="flex flex-col items-center mt-4 w-full space-y-5 z-10 relative">
-                    <p className="text-[11px] tracking-[0.4em] font-bold uppercase opacity-90 drop-shadow-sm">{data.title}</p>
-                    <div className="flex flex-col items-center">
-                      <p className="text-5xl sm:text-6xl font-serif tracking-wide pb-4 drop-shadow-md">
-                        {data.name}
-                      </p>
-                      <div className="w-32 h-[1px] bg-white/50" />
-                    </div>
+                  <div className="flex flex-col items-center w-full">
+                    <p className="text-[11px] sm:text-xs tracking-[0.4em] font-bold uppercase opacity-90 mb-3 drop-shadow-sm">{data.title}</p>
+                    <p className="text-[2.5rem] sm:text-[2.75rem] font-sans font-bold uppercase tracking-[0.2em] mb-4 drop-shadow-md leading-none">
+                      {data.name}
+                    </p>
+                    <div className="w-[85%] h-[1px] bg-white opacity-80" />
                   </div>
 
                   {/* Main Action and QR */}
-                  <div className="flex flex-col items-center z-10 relative flex-1 justify-center space-y-8 mt-2">
-                    <h2 className="text-4xl sm:text-5xl font-serif font-bold leading-[1.15] drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)]">
-                      Scanea para<br/>ver<br/>la invitación
+                  <div className="flex flex-col items-center z-10 relative flex-1 justify-center w-full mt-4">
+                    <h2 className="text-[2.75rem] sm:text-[3.25rem] font-serif font-bold leading-[1.05] drop-shadow-md mb-8">
+                      Scanea para ver<br/>la invitacion
                     </h2>
 
-                    <div className="bg-white p-4 rounded-md shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
-                      <QRCodeSVG 
-                        value={`${getPublicUrl()}?guest=${qrGuestId}`} 
-                        size={100}
-                        width="180px"
-                        height="180px"
-                        level="Q"
-                        includeMargin={false}
-                        className="w-44 h-44 sm:w-52 sm:h-52"
+                    <div className="relative">
+                      {/* Long drop shadow */}
+                      <div 
+                        className="absolute inset-0 z-[-1]" 
+                        style={{
+                          boxShadow: Array.from({length: 400}).map((_, i) => `${i}px ${i}px 0 rgba(0,0,0,0.15)`).join(',')
+                        }}
                       />
+                      <div className="bg-white p-2">
+                        <QRCodeSVG 
+                          value={`${getPublicUrl()}?guest=${qrGuestId}`} 
+                          size={100}
+                          width="180px"
+                          height="180px"
+                          level="Q"
+                          includeMargin={false}
+                          className="w-44 h-44 sm:w-52 sm:h-52"
+                        />
+                      </div>
                     </div>
                   </div>
 
                   {/* Footer Info */}
-                  <div className="w-full z-10 relative pb-2 pt-6 flex flex-col items-center space-y-5">
-                    <div className="w-16 h-[1px] bg-white/50" />
+                  <div className="w-full z-10 relative pt-8 flex flex-col items-center justify-end">
+                    <div className="w-[85%] h-[1px] bg-white opacity-80 mb-5" />
                     
-                    {data.guests?.find(g => g.id === qrGuestId)?.name && (
-                      <div className="flex flex-col items-center justify-center space-y-4 w-full">
-                        <p className="text-lg sm:text-xl font-serif italic drop-shadow-md px-4">
-                          {data.guests.find(g => g.id === qrGuestId)?.name}
-                        </p>
-                        
-                        <div className="flex items-center justify-center gap-3 w-full">
-                          <div className="px-4 py-1.5 border border-white/40 rounded-full bg-white/10 backdrop-blur-sm">
-                            <p className="text-[9px] sm:text-[10px] tracking-[0.15em] font-bold uppercase shadow-sm">
-                              {data.guests?.find(g => g.id === qrGuestId)?.tickets === 0 
-                                ? 'Entrada Libre' 
-                                : `${data.guests?.find(g => g.id === qrGuestId)?.tickets || 1} Pase${(data.guests?.find(g => g.id === qrGuestId)?.tickets || 1) !== 1 ? 's' : ''}`}
-                            </p>
-                          </div>
-                          
-                          {data.guests?.find(g => g.id === qrGuestId)?.tableNumber && (
-                            <div className="px-4 py-1.5 border border-white/40 rounded-full bg-white/20 backdrop-blur-sm">
-                              <p className="text-[9px] sm:text-[10px] tracking-[0.15em] font-bold uppercase shadow-sm">
-                                Mesa: {data.guests.find(g => g.id === qrGuestId)?.tableNumber}
-                              </p>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
                     {data.date && (
-                      <p className="text-[8px] sm:text-[9px] tracking-[0.25em] font-bold uppercase drop-shadow-sm opacity-90 max-w-[90%] leading-relaxed mt-2">
-                        Confirmar asistencia antes del {(() => {
+                      <p className="text-[10px] sm:text-[11px] font-sans font-bold uppercase tracking-[0.3em] drop-shadow-sm opacity-95">
+                        Confirmar antes del {(() => {
                           try {
                             const [year, month, day] = data.date.split('-');
                             const d = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
@@ -1915,6 +1896,21 @@ export default function Editor() {
                         })()}
                       </p>
                     )}
+
+                    <div className="flex gap-4 items-center justify-center mt-3">
+                       {data.guests?.find(g => g.id === qrGuestId)?.tickets !== undefined && (
+                        <p className="text-[9px] sm:text-[10px] font-sans font-bold uppercase tracking-[0.2em] opacity-90 border border-white/40 px-3 py-1 rounded-sm bg-black/10 backdrop-blur-sm">
+                          {data.guests?.find(g => g.id === qrGuestId)?.tickets === 0 
+                            ? 'Entrada Libre' 
+                            : `${data.guests?.find(g => g.id === qrGuestId)?.tickets || 1} Pase${(data.guests?.find(g => g.id === qrGuestId)?.tickets || 1) !== 1 ? 's' : ''}`}
+                        </p>
+                       )}
+                       {data.guests?.find(g => g.id === qrGuestId)?.tableNumber && (
+                        <p className="text-[9px] sm:text-[10px] font-sans font-bold uppercase tracking-[0.2em] opacity-90 border border-white/40 px-3 py-1 rounded-sm bg-black/10 backdrop-blur-sm">
+                          Mesa {data.guests.find(g => g.id === qrGuestId)?.tableNumber}
+                        </p>
+                       )}
+                    </div>
                   </div>
                 </div>
               </div>
