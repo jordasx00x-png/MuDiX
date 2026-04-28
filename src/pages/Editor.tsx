@@ -4,7 +4,11 @@ import { InvitationData, defaultInvitation, SectionStyle } from '../lib/types';
 import InvitationTemplate from '../components/invitation/TemplateSwitcher';
 import { getTheme } from '../components/invitation/InvitationTemplate';
 import QRShare from '../components/invitation/QRShare';
-import { Save, Eye, LayoutTemplate, Settings, MapPin, Gift, List, Image as ImageIcon, Instagram, Upload, Share2, Copy, Check, ArrowLeft, Users, Plus, Trash2, Loader2, Palette, Type, Sparkles } from 'lucide-react';
+import { Save, Eye, LayoutTemplate, Settings, MapPin, Gift, List, Image as ImageIcon, Instagram, Upload, Share2, Copy, Check, ArrowLeft, Users, Plus, Trash2, Loader2, Palette, Type, Sparkles, QrCode, X, Download } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
+import { toJpeg } from 'html-to-image';
+import { format, subDays } from 'date-fns';
+import { es } from 'date-fns/locale';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../lib/AuthContext';
 import { toast } from 'sonner';
@@ -184,6 +188,9 @@ export default function Editor() {
   const [shareGuestId, setShareGuestId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [previewGuestId, setPreviewGuestId] = useState<string | null>(null);
+  const [qrGuestId, setQrGuestId] = useState<string | null>(null);
+  const [qrColor, setQrColor] = useState<string>('#E63946');
+  const qrRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
 
@@ -222,6 +229,21 @@ export default function Editor() {
       toast.error(`Error al guardar: ${error.message}`, { id: saveToastId });
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleDownloadQR = async () => {
+    if (!qrRef.current || !qrGuestId) return;
+    try {
+      const dataUrl = await toJpeg(qrRef.current, { quality: 0.95 });
+      const link = document.createElement('a');
+      link.download = `Pase-${data.guests?.find(g => g.id === qrGuestId)?.name || 'Invitado'}.jpg`;
+      link.href = dataUrl;
+      link.click();
+      toast.success('Tarjeta descargada con éxito');
+    } catch (err) {
+      console.error(err);
+      toast.error('Error al generar la imagen. Intenta tomar una captura de pantalla.');
     }
   };
 
@@ -1519,43 +1541,65 @@ export default function Editor() {
                               placeholder="Nombre del invitado o familia"
                             />
                           </div>
-                          <div>
-                            <div className="flex items-center justify-between mb-1">
-                              <label className="block text-xs font-medium text-gray-700">Número de Pases</label>
-                              <label className="flex items-center gap-1.5 cursor-pointer">
-                                <input 
-                                  type="checkbox"
-                                  checked={guest.tickets === 0}
-                                  onChange={(e) => {
-                                    setIsDirty(true);
-                                    setData(prev => {
-                                      const newGuests = [...(prev.guests || [])];
-                                      newGuests[index] = { ...newGuests[index], tickets: e.target.checked ? 0 : 1 };
-                                      return { ...prev, guests: newGuests };
-                                    });
-                                  }}
-                                  className="w-3 h-3 text-primary-600 rounded border-gray-300"
-                                />
-                                <span className="text-[10px] text-gray-500 font-medium uppercase">Entrada Libre</span>
-                              </label>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div>
+                              <div className="flex items-center justify-between mb-1">
+                                <label className="block text-xs font-medium text-gray-700">Número de Pases</label>
+                                <label className="flex items-center gap-1.5 cursor-pointer">
+                                  <input 
+                                    type="checkbox"
+                                    checked={guest.tickets === 0}
+                                    onChange={(e) => {
+                                      setIsDirty(true);
+                                      setData(prev => {
+                                        const newGuests = [...(prev.guests || [])];
+                                        newGuests[index] = { ...newGuests[index], tickets: e.target.checked ? 0 : 1 };
+                                        return { ...prev, guests: newGuests };
+                                      });
+                                    }}
+                                    className="w-3 h-3 text-primary-600 rounded border-gray-300"
+                                  />
+                                  <span className="text-[10px] text-gray-500 font-medium uppercase">Entrada Libre</span>
+                                </label>
+                              </div>
+                              <input
+                                type="number"
+                                min="1"
+                                disabled={guest.tickets === 0}
+                                value={guest.tickets === 0 ? '' : guest.tickets}
+                                placeholder={guest.tickets === 0 ? 'Sin límite' : ''}
+                                onChange={(e) => {
+                                  setIsDirty(true);
+                                  setData(prev => {
+                                    const newGuests = [...(prev.guests || [])];
+                                    const val = parseInt(e.target.value);
+                                    newGuests[index] = { ...newGuests[index], tickets: isNaN(val) ? 1 : val };
+                                    return { ...prev, guests: newGuests };
+                                  });
+                                }}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm disabled:bg-gray-100 disabled:text-gray-400"
+                              />
                             </div>
-                            <input
-                              type="number"
-                              min="1"
-                              disabled={guest.tickets === 0}
-                              value={guest.tickets === 0 ? '' : guest.tickets}
-                              placeholder={guest.tickets === 0 ? 'Sin límite de pases' : ''}
-                              onChange={(e) => {
-                                setIsDirty(true);
-                                setData(prev => {
-                                  const newGuests = [...(prev.guests || [])];
-                                  const val = parseInt(e.target.value);
-                                  newGuests[index] = { ...newGuests[index], tickets: isNaN(val) ? 1 : val };
-                                  return { ...prev, guests: newGuests };
-                                });
-                              }}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm disabled:bg-gray-100 disabled:text-gray-400"
-                            />
+                            <div>
+                              <div className="flex items-center justify-between mb-1">
+                                <label className="block text-xs font-medium text-gray-700">No. de Mesa</label>
+                                <span className="text-[10px] text-gray-400 font-medium uppercase font-normal">(Opcional)</span>
+                              </div>
+                              <input
+                                type="text"
+                                value={guest.tableNumber || ''}
+                                placeholder="Ej. 12"
+                                onChange={(e) => {
+                                  setIsDirty(true);
+                                  setData(prev => {
+                                    const newGuests = [...(prev.guests || [])];
+                                    newGuests[index] = { ...newGuests[index], tableNumber: e.target.value };
+                                    return { ...prev, guests: newGuests };
+                                  });
+                                }}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm"
+                              />
+                            </div>
                           </div>
                           
                           {/* Unique Link for this guest */}
@@ -1578,9 +1622,16 @@ export default function Editor() {
                               <button 
                                 onClick={() => setShareGuestId(guest.id)}
                                 className="flex items-center justify-center w-8 h-8 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors shrink-0"
-                                title="Generar QR Personalizado"
+                                title="Compartir enlace"
                               >
-                                <Sparkles className="w-4 h-4" />
+                                <Share2 className="w-4 h-4" />
+                              </button>
+                              <button 
+                                onClick={() => setQrGuestId(guest.id)}
+                                className="flex items-center justify-center w-8 h-8 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shrink-0"
+                                title="Generar Tarjeta QR"
+                              >
+                                <QrCode className="w-4 h-4" />
                               </button>
                             </div>
                           </div>
@@ -1760,6 +1811,114 @@ export default function Editor() {
           data={previewData} 
           theme={getTheme(previewData)} 
         />
+      )}
+
+      {/* QR Code Card Generator Modal */}
+      {qrGuestId && (
+        <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="p-4 border-b flex justify-between items-center bg-gray-50 shrink-0">
+              <h3 className="font-bold text-gray-900">Generar Tarjeta QR</h3>
+              <div className="flex items-center gap-4">
+                <input 
+                  type="color" 
+                  value={qrColor} 
+                  onChange={e => setQrColor(e.target.value)}
+                  className="w-8 h-8 rounded cursor-pointer border-none p-0"
+                  title="Cambiar color de fondo"
+                />
+                <button onClick={() => setQrGuestId(null)} className="p-2 hover:bg-gray-200 rounded-full">
+                  <X className="w-5 h-5 text-gray-500" />
+                </button>
+              </div>
+            </div>
+            
+            <div className="p-6 bg-gray-100 overflow-y-auto flex-1 flex flex-col items-center justify-center">
+              {/* This is the card to be captured */}
+              <div 
+                ref={qrRef}
+                className="w-full max-w-[400px] aspect-[3/4] relative flex flex-col items-center justify-center text-white text-center overflow-hidden shrink-0"
+                style={{ 
+                  backgroundColor: qrColor,
+                  backgroundImage: `linear-gradient(135deg, ${qrColor} 0%, color-mix(in srgb, ${qrColor} 70%, black) 100%)`
+                }}
+              >
+                <div className="absolute inset-0 p-8 flex flex-col justify-between">
+                  <div className="space-y-3 z-10 relative">
+                    <p className="text-xs tracking-[0.3em] font-medium uppercase opacity-90">{data.title}</p>
+                    <p className="text-2xl font-serif tracking-[0.2em] relative inline-block">
+                      {data.name}
+                      <span className="absolute -bottom-2 lg:-bottom-4 left-0 w-full h-px bg-white/40" />
+                    </p>
+                  </div>
+
+                  <div className="space-y-6 flex flex-col items-center z-10 relative mt-8">
+                    <h2 className="text-3xl md:text-5xl font-serif font-bold leading-tight drop-shadow-md">
+                      Scanea para ver<br/>la invitación
+                    </h2>
+
+                    <div className="bg-white p-4 relative w-48 h-48 sm:w-56 sm:h-56">
+                      {/* Long shadow effect hack using linear gradient behind QR */}
+                      <div className="absolute top-1/2 left-1/2 lg:-bottom-48 lg:-right-48 w-[400px] h-[400px] bg-gradient-to-br from-black/40 to-transparent -z-10 blur-sm mix-blend-multiply" style={{ transform: 'translate(0%, 0%) rotate(45deg)' }} />
+                      <QRCodeSVG 
+                        value={`${getPublicUrl()}?guest=${qrGuestId}`} 
+                        size={100}
+                        width="100%"
+                        height="100%"
+                        level="Q"
+                        includeMargin={false}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 w-full z-10 relative mt-8">
+                    <div className="w-full h-px bg-white/40" />
+                    <div className="grid gap-2 text-center">
+                      {data.date && (
+                        <p className="text-[10px] sm:text-xs tracking-[0.3em] font-medium uppercase drop-shadow-sm">
+                          Confirmar antes del {(() => {
+                            try {
+                              const [year, month, day] = data.date.split('-');
+                              const d = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                              return format(subDays(d, 15), "d 'de' MMMM", { locale: es });
+                            } catch { return '...'; }
+                          })()}
+                        </p>
+                      )}
+                      {data.guests?.find(g => g.id === qrGuestId)?.name && (
+                        <p className="text-sm font-bold uppercase tracking-[0.2em] drop-shadow-md pb-2">
+                          {data.guests.find(g => g.id === qrGuestId)?.name}
+                        </p>
+                      )}
+                      
+                      {data.guests?.find(g => g.id === qrGuestId)?.tableNumber && (
+                        <div className="mt-2 inline-block px-4 py-1.5 border border-white/50 rounded-full bg-black/10 backdrop-blur-sm self-center">
+                          <p className="text-xs font-bold tracking-[0.2em] uppercase">Mesa: {data.guests.find(g => g.id === qrGuestId)?.tableNumber}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 border-t bg-white flex justify-end gap-3 shrink-0">
+              <button 
+                onClick={() => setQrGuestId(null)}
+                className="px-4 py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                Cerrar
+              </button>
+              <button
+                onClick={handleDownloadQR}
+                className="flex items-center gap-2 px-6 py-2 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors"
+              >
+                <Download className="w-4 h-4" />
+                Descargar Imagen
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Floating Save Button for Mobile */}

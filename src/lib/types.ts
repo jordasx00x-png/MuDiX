@@ -2,6 +2,7 @@ export interface Guest {
   id: string;
   name: string;
   tickets: number;
+  tableNumber?: string;
 }
 
 export interface SectionStyle {
