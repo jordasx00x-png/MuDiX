@@ -1833,91 +1833,93 @@ export default function Editor() {
               </div>
             </div>
             
-            <div className="p-6 bg-gray-100 overflow-y-auto flex-1 flex flex-col items-center justify-center">
+            <div className="p-4 sm:p-6 bg-gray-100 overflow-auto flex-1 flex items-center justify-center">
               {/* This is the card to be captured */}
               <div 
                 ref={qrRef}
-                className="w-full max-w-[420px] aspect-[4/5.5] relative flex flex-col items-center text-white text-center overflow-hidden shrink-0 shadow-2xl mx-auto"
+                className="w-[380px] h-[520px] sm:w-[400px] sm:h-[550px] relative flex flex-col items-center flex-shrink-0 shadow-2xl bg-white overflow-hidden"
                 style={{ 
                   backgroundColor: qrColor,
-                  backgroundImage: `linear-gradient(135deg, color-mix(in srgb, ${qrColor} 20%, white) 0%, ${qrColor} 40%, color-mix(in srgb, ${qrColor} 40%, black) 100%)`
+                  backgroundImage: `linear-gradient(to bottom, color-mix(in srgb, ${qrColor} 10%, white) 0%, ${qrColor} 30%, color-mix(in srgb, ${qrColor} 40%, black) 100%)`
                 }}
               >
-                <div className="absolute inset-0 pt-[10%] pb-[8%] px-[8%] flex flex-col items-center justify-between h-full">
+                <div className="absolute inset-0 pt-10 pb-8 px-6 sm:px-8 flex flex-col items-center justify-between h-full">
                   {/* Header */}
                   <div className="flex flex-col items-center w-full">
-                    <p className="text-[clamp(9px,3vw,11px)] tracking-[0.4em] font-bold uppercase opacity-90 mb-[4%] drop-shadow-sm">{data.title || 'MIS XV AÑOS'}</p>
-                    <p className="text-[clamp(2rem,9vw,2.75rem)] font-sans font-bold uppercase tracking-[0.2em] mb-[6%] drop-shadow-md leading-none">
-                      {data.name}
+                    <p className="text-[11px] font-sans font-bold uppercase tracking-[0.35em] text-white opacity-95 mb-3 drop-shadow-sm">
+                      {data.title || 'MIS XV AÑOS'}
                     </p>
-                    <div className="w-[85%] h-[1px] bg-white opacity-80" />
+                    <p className="text-[34px] sm:text-[36px] font-sans font-medium uppercase tracking-[0.25em] text-white mb-5 drop-shadow-md leading-none text-center">
+                      {data.name || 'N I C O L E'}
+                    </p>
+                    <div className="w-[85%] h-[1px] bg-white opacity-90 shadow-sm" />
                   </div>
 
                   {/* Main Action and QR */}
-                  <div className="flex flex-col items-center z-10 relative flex-1 justify-center w-full mt-2">
-                    <h2 className="text-[clamp(2rem,10vw,3.25rem)] font-serif font-bold leading-[1.05] drop-shadow-md mb-[8%]">
+                  <div className="flex flex-col items-center z-10 relative flex-1 justify-center w-full mt-4">
+                    <h2 
+                      className="text-[40px] sm:text-[44px] text-white text-center font-bold leading-[1.05] drop-shadow-md mb-8"
+                      style={{ fontFamily: '"Playfair Display", Georgia, serif', letterSpacing: '-0.02em', textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}
+                    >
                       Scanea para ver<br/>la invitacion
                     </h2>
 
-                    <div className="relative">
-                      {/* Long drop shadow */}
+                    <div className="relative isolate">
+                      {/* Hard diagonal shadow */}
                       <div 
                         className="absolute inset-0 z-[-1]" 
                         style={{
-                          boxShadow: Array.from({length: 400}).map((_, i) => `${i}px ${i}px 0 rgba(0,0,0,0.15)`).join(',')
+                          boxShadow: Array.from({length: 250}).map((_, i) => `${i}px ${i}px 0 color-mix(in srgb, ${qrColor} 55%, black)`).join(',')
                         }}
                       />
-                      <div className="bg-white p-[clamp(4px,2vw,8px)]">
+                      <div className="bg-white p-[6px]">
                         <QRCodeSVG 
                           value={`${getPublicUrl()}?guest=${qrGuestId}`} 
-                          size={100}
-                          width="100%"
-                          height="100%"
+                          size={150}
                           level="Q"
                           includeMargin={false}
-                          className="w-[35vw] h-[35vw] max-w-[176px] max-h-[176px]"
                         />
                       </div>
                     </div>
                   </div>
 
                   {/* Footer Info */}
-                  <div className="w-full z-10 relative pt-[8%] flex flex-col items-center justify-end">
-                    <div className="w-[85%] h-[1px] bg-white opacity-80 mb-[5%]" />
+                  <div className="w-full z-10 relative pt-8 flex flex-col items-center justify-end text-white">
+                    <div className="w-[85%] h-[1px] bg-white opacity-90 mb-5 shadow-sm" />
                     
-                    <div className="flex flex-col gap-[clamp(4px,1vw,8px)] items-center justify-center">
-                      {data.date && (
-                        <p className="text-[clamp(8px,2.5vw,11px)] font-sans font-bold uppercase tracking-[0.3em] drop-shadow-sm opacity-95">
-                          Confirmar antes del {(() => {
-                            try {
-                              const [year, month, day] = data.date.split('-');
-                              const d = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-                              return format(subDays(d, 15), "d 'de' MMMM", { locale: es });
-                            } catch { return '...'; }
-                          })()}
+                    <p className="text-[11px] font-sans font-bold uppercase tracking-[0.25em] drop-shadow-sm opacity-95 text-center mb-4">
+                      CONFIRMAR ANTES DEL {(() => {
+                        try {
+                          if (!data.date) return '15 DE MAYO';
+                          const [year, month, day] = data.date.split('-');
+                          const d = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                          return format(subDays(d, 15), "d 'DE' MMMM", { locale: es }).toUpperCase();
+                        } catch { return '15 DE MAYO'; }
+                      })()}
+                    </p>
+                      
+                    <div className="flex flex-col items-center w-full">
+                      {data.guests?.find(g => g.id === qrGuestId)?.name ? (
+                        <p className="text-[13px] font-sans font-bold tracking-[0.2em] opacity-95 mb-3 text-center uppercase drop-shadow-sm">
+                          - {data.guests.find(g => g.id === qrGuestId)?.name} -
                         </p>
+                      ) : (
+                         <div className="mb-3" />
                       )}
                       
-                      <div className="flex flex-col items-center mt-[2%]">
-                        {data.guests?.find(g => g.id === qrGuestId)?.name && (
-                          <p className="text-[clamp(8px,2.5vw,11px)] font-sans font-bold uppercase tracking-[0.2em] drop-shadow-sm opacity-95 mb-[2%] text-center truncate px-4">
-                            {data.guests.find(g => g.id === qrGuestId)?.name}
+                      <div className="flex gap-4 items-center justify-center">
+                         {data.guests?.find(g => g.id === qrGuestId)?.tickets !== undefined && (
+                          <p className="text-[12px] font-sans font-bold tracking-[0.15em] opacity-95 px-3 py-1 bg-black/20 border border-white/40 whitespace-nowrap drop-shadow-sm backdrop-blur-sm">
+                            {data.guests?.find(g => g.id === qrGuestId)?.tickets === 0 
+                              ? 'ENTRADA LIBRE' 
+                              : `${data.guests?.find(g => g.id === qrGuestId)?.tickets || 1} PASE${(data.guests?.find(g => g.id === qrGuestId)?.tickets || 1) !== 1 ? 'S' : ''}`}
                           </p>
-                        )}
-                        <div className="flex gap-2 items-center justify-center mt-1">
-                           {data.guests?.find(g => g.id === qrGuestId)?.tickets !== undefined && (
-                            <p className="text-[clamp(7px,2.2vw,10px)] font-sans font-bold uppercase tracking-[0.2em] opacity-90 border border-white/40 px-[8px] py-[4px] rounded-sm bg-black/10 backdrop-blur-sm whitespace-nowrap">
-                              {data.guests?.find(g => g.id === qrGuestId)?.tickets === 0 
-                                ? 'Entrada Libre' 
-                                : `${data.guests?.find(g => g.id === qrGuestId)?.tickets || 1} Pase${(data.guests?.find(g => g.id === qrGuestId)?.tickets || 1) !== 1 ? 's' : ''}`}
-                            </p>
-                           )}
-                           {data.guests?.find(g => g.id === qrGuestId)?.tableNumber && (
-                            <p className="text-[clamp(7px,2.2vw,10px)] font-sans font-bold uppercase tracking-[0.2em] opacity-90 border border-white/40 px-[8px] py-[4px] rounded-sm bg-black/10 backdrop-blur-sm whitespace-nowrap">
-                              Mesa {data.guests.find(g => g.id === qrGuestId)?.tableNumber}
-                            </p>
-                           )}
-                        </div>
+                         )}
+                         {data.guests?.find(g => g.id === qrGuestId)?.tableNumber && (
+                          <p className="text-[12px] font-sans font-bold tracking-[0.15em] opacity-95 px-3 py-1 bg-black/20 border border-white/40 whitespace-nowrap drop-shadow-sm backdrop-blur-sm">
+                            MESA {data.guests.find(g => g.id === qrGuestId)?.tableNumber}
+                          </p>
+                         )}
                       </div>
                     </div>
                   </div>
