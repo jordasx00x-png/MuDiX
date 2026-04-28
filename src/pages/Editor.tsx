@@ -4,7 +4,7 @@ import { InvitationData, defaultInvitation, SectionStyle } from '../lib/types';
 import InvitationTemplate from '../components/invitation/TemplateSwitcher';
 import { getTheme } from '../components/invitation/InvitationTemplate';
 import QRShare from '../components/invitation/QRShare';
-import { Save, Eye, LayoutTemplate, Settings, MapPin, Gift, List, Image as ImageIcon, Instagram, Upload, Share2, Copy, Check, ArrowLeft, Users, Plus, Trash2, Loader2, Palette, Type, Sparkles, QrCode, X, Download } from 'lucide-react';
+import { Save, Eye, LayoutTemplate, Settings, MapPin, Gift, List, Image as ImageIcon, Instagram, Upload, Share2, Copy, Check, ArrowLeft, Users, Plus, Trash2, Loader2, Palette, Type, Sparkles, X, QrCode, Download } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { toJpeg } from 'html-to-image';
 import { format, subDays } from 'date-fns';
@@ -194,6 +194,21 @@ export default function Editor() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
 
+  const handleDownloadQR = async () => {
+    if (!qrRef.current || !qrGuestId) return;
+    try {
+      const dataUrl = await toJpeg(qrRef.current, { quality: 0.95, pixelRatio: 3 });
+      const link = document.createElement('a');
+      link.download = `Pase-${data.guests?.find(g => g.id === qrGuestId)?.name || 'Invitado'}.jpg`;
+      link.href = dataUrl;
+      link.click();
+      toast.success('Tarjeta descargada con éxito');
+    } catch (err) {
+      console.error(err);
+      toast.error('Error al generar la imagen. Intenta tomar una captura de pantalla.');
+    }
+  };
+
   const handleSave = async () => {
     if (!user) {
       toast.error('Debes iniciar sesión para guardar.');
@@ -229,21 +244,6 @@ export default function Editor() {
       toast.error(`Error al guardar: ${error.message}`, { id: saveToastId });
     } finally {
       setIsSaving(false);
-    }
-  };
-
-  const handleDownloadQR = async () => {
-    if (!qrRef.current || !qrGuestId) return;
-    try {
-      const dataUrl = await toJpeg(qrRef.current, { quality: 0.95, pixelRatio: 2 });
-      const link = document.createElement('a');
-      link.download = `Pase-${data.guests?.find(g => g.id === qrGuestId)?.name || 'Invitado'}.jpg`;
-      link.href = dataUrl;
-      link.click();
-      toast.success('Tarjeta descargada con éxito');
-    } catch (err) {
-      console.error(err);
-      toast.error('Error al generar la imagen. Intenta tomar una captura de pantalla.');
     }
   };
 
@@ -1843,19 +1843,19 @@ export default function Editor() {
                   backgroundImage: `linear-gradient(135deg, color-mix(in srgb, ${qrColor} 20%, white) 0%, ${qrColor} 40%, color-mix(in srgb, ${qrColor} 40%, black) 100%)`
                 }}
               >
-                <div className="absolute inset-0 pt-10 pb-8 px-8 flex flex-col items-center justify-between h-full">
+                <div className="absolute inset-0 pt-[10%] pb-[8%] px-[8%] flex flex-col items-center justify-between h-full">
                   {/* Header */}
                   <div className="flex flex-col items-center w-full">
-                    <p className="text-[11px] sm:text-xs tracking-[0.4em] font-bold uppercase opacity-90 mb-3 drop-shadow-sm">{data.title}</p>
-                    <p className="text-[2.5rem] sm:text-[2.75rem] font-sans font-bold uppercase tracking-[0.2em] mb-4 drop-shadow-md leading-none">
+                    <p className="text-[clamp(9px,3vw,11px)] tracking-[0.4em] font-bold uppercase opacity-90 mb-[4%] drop-shadow-sm">{data.title || 'MIS XV AÑOS'}</p>
+                    <p className="text-[clamp(2rem,9vw,2.75rem)] font-sans font-bold uppercase tracking-[0.2em] mb-[6%] drop-shadow-md leading-none">
                       {data.name}
                     </p>
                     <div className="w-[85%] h-[1px] bg-white opacity-80" />
                   </div>
 
                   {/* Main Action and QR */}
-                  <div className="flex flex-col items-center z-10 relative flex-1 justify-center w-full mt-4">
-                    <h2 className="text-[2.75rem] sm:text-[3.25rem] font-serif font-bold leading-[1.05] drop-shadow-md mb-8">
+                  <div className="flex flex-col items-center z-10 relative flex-1 justify-center w-full mt-2">
+                    <h2 className="text-[clamp(2rem,10vw,3.25rem)] font-serif font-bold leading-[1.05] drop-shadow-md mb-[8%]">
                       Scanea para ver<br/>la invitacion
                     </h2>
 
@@ -1867,49 +1867,58 @@ export default function Editor() {
                           boxShadow: Array.from({length: 400}).map((_, i) => `${i}px ${i}px 0 rgba(0,0,0,0.15)`).join(',')
                         }}
                       />
-                      <div className="bg-white p-2">
+                      <div className="bg-white p-[clamp(4px,2vw,8px)]">
                         <QRCodeSVG 
                           value={`${getPublicUrl()}?guest=${qrGuestId}`} 
                           size={100}
-                          width="180px"
-                          height="180px"
+                          width="100%"
+                          height="100%"
                           level="Q"
                           includeMargin={false}
-                          className="w-44 h-44 sm:w-52 sm:h-52"
+                          className="w-[35vw] h-[35vw] max-w-[176px] max-h-[176px]"
                         />
                       </div>
                     </div>
                   </div>
 
                   {/* Footer Info */}
-                  <div className="w-full z-10 relative pt-8 flex flex-col items-center justify-end">
-                    <div className="w-[85%] h-[1px] bg-white opacity-80 mb-5" />
+                  <div className="w-full z-10 relative pt-[8%] flex flex-col items-center justify-end">
+                    <div className="w-[85%] h-[1px] bg-white opacity-80 mb-[5%]" />
                     
-                    {data.date && (
-                      <p className="text-[10px] sm:text-[11px] font-sans font-bold uppercase tracking-[0.3em] drop-shadow-sm opacity-95">
-                        Confirmar antes del {(() => {
-                          try {
-                            const [year, month, day] = data.date.split('-');
-                            const d = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-                            return format(subDays(d, 15), "d 'de' MMMM", { locale: es });
-                          } catch { return '...'; }
-                        })()}
-                      </p>
-                    )}
-
-                    <div className="flex gap-4 items-center justify-center mt-3">
-                       {data.guests?.find(g => g.id === qrGuestId)?.tickets !== undefined && (
-                        <p className="text-[9px] sm:text-[10px] font-sans font-bold uppercase tracking-[0.2em] opacity-90 border border-white/40 px-3 py-1 rounded-sm bg-black/10 backdrop-blur-sm">
-                          {data.guests?.find(g => g.id === qrGuestId)?.tickets === 0 
-                            ? 'Entrada Libre' 
-                            : `${data.guests?.find(g => g.id === qrGuestId)?.tickets || 1} Pase${(data.guests?.find(g => g.id === qrGuestId)?.tickets || 1) !== 1 ? 's' : ''}`}
+                    <div className="flex flex-col gap-[clamp(4px,1vw,8px)] items-center justify-center">
+                      {data.date && (
+                        <p className="text-[clamp(8px,2.5vw,11px)] font-sans font-bold uppercase tracking-[0.3em] drop-shadow-sm opacity-95">
+                          Confirmar antes del {(() => {
+                            try {
+                              const [year, month, day] = data.date.split('-');
+                              const d = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                              return format(subDays(d, 15), "d 'de' MMMM", { locale: es });
+                            } catch { return '...'; }
+                          })()}
                         </p>
-                       )}
-                       {data.guests?.find(g => g.id === qrGuestId)?.tableNumber && (
-                        <p className="text-[9px] sm:text-[10px] font-sans font-bold uppercase tracking-[0.2em] opacity-90 border border-white/40 px-3 py-1 rounded-sm bg-black/10 backdrop-blur-sm">
-                          Mesa {data.guests.find(g => g.id === qrGuestId)?.tableNumber}
-                        </p>
-                       )}
+                      )}
+                      
+                      <div className="flex flex-col items-center mt-[2%]">
+                        {data.guests?.find(g => g.id === qrGuestId)?.name && (
+                          <p className="text-[clamp(8px,2.5vw,11px)] font-sans font-bold uppercase tracking-[0.2em] drop-shadow-sm opacity-95 mb-[2%] text-center truncate px-4">
+                            {data.guests.find(g => g.id === qrGuestId)?.name}
+                          </p>
+                        )}
+                        <div className="flex gap-2 items-center justify-center mt-1">
+                           {data.guests?.find(g => g.id === qrGuestId)?.tickets !== undefined && (
+                            <p className="text-[clamp(7px,2.2vw,10px)] font-sans font-bold uppercase tracking-[0.2em] opacity-90 border border-white/40 px-[8px] py-[4px] rounded-sm bg-black/10 backdrop-blur-sm whitespace-nowrap">
+                              {data.guests?.find(g => g.id === qrGuestId)?.tickets === 0 
+                                ? 'Entrada Libre' 
+                                : `${data.guests?.find(g => g.id === qrGuestId)?.tickets || 1} Pase${(data.guests?.find(g => g.id === qrGuestId)?.tickets || 1) !== 1 ? 's' : ''}`}
+                            </p>
+                           )}
+                           {data.guests?.find(g => g.id === qrGuestId)?.tableNumber && (
+                            <p className="text-[clamp(7px,2.2vw,10px)] font-sans font-bold uppercase tracking-[0.2em] opacity-90 border border-white/40 px-[8px] py-[4px] rounded-sm bg-black/10 backdrop-blur-sm whitespace-nowrap">
+                              Mesa {data.guests.find(g => g.id === qrGuestId)?.tableNumber}
+                            </p>
+                           )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
