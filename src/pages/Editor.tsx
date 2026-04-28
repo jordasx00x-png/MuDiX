@@ -838,12 +838,23 @@ export default function Editor() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Fecha y Hora del Evento</label>
-                <input
-                  type="datetime-local"
-                  value={data.date.slice(0, 16)}
-                  onChange={(e) => handleChange(null, 'date', new Date(e.target.value).toISOString())}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
-                />
+                <div className="flex gap-2">
+                  <input
+                    type="datetime-local"
+                    value={data.date.slice(0, 16)}
+                    onChange={(e) => handleChange(null, 'date', new Date(e.target.value).toISOString())}
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+                  />
+                  <select
+                    value={data.dateSize || 'mediano'}
+                    onChange={(e) => handleChange(null, 'dateSize', e.target.value)}
+                    className="w-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none bg-white"
+                  >
+                    <option value="pequeño">Pequeño</option>
+                    <option value="mediano">Mediano</option>
+                    <option value="grande">Grande</option>
+                  </select>
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Número de WhatsApp para Confirmación (RSVP)</label>

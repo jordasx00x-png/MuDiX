@@ -32,6 +32,12 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
     'grande': 'text-8xl md:text-[10rem]'
   };
 
+  const dateSizeClass = {
+    'pequeño': 'text-base md:text-lg',
+    'mediano': 'text-lg md:text-xl',
+    'grande': 'text-2xl md:text-3xl'
+  };
+
   // Define valid slides based on available data
   const slides = [
     'cover',
@@ -117,7 +123,7 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
                   />
                   <div className="flex flex-col items-center gap-1 opacity-80">
                     <p className="text-sm uppercase tracking-widest">Invitan a su ceremonia de BODA</p>
-                    <p className="text-lg">
+                    <p className={cn(dateSizeClass[data.dateSize || 'mediano'])}>
                       {isValidDate ? format(eventDate, "EEEE d 'de' MMMM 'de' yyyy", { locale: es }) : 'Fecha por confirmar'}
                     </p>
                   </div>
@@ -231,7 +237,7 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
                     )}
                   </motion.div>
                 )}
-                <p className="text-lg opacity-90 mb-4">
+                <p className={cn("opacity-90 mb-4", dateSizeClass[data.dateSize || 'mediano'])}>
                   {isValidDate ? format(eventDate, "EEEE d 'de' MMMM 'de' yyyy", { locale: es }) : 'Fecha por confirmar'}
                 </p>
                 <Countdown targetDate={data.date} />

@@ -1097,6 +1097,12 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
     'grande': 'text-8xl md:text-[10rem]'
   };
 
+  const dateSizeClass = {
+    'pequeño': 'text-base md:text-lg',
+    'mediano': 'text-lg md:text-xl',
+    'grande': 'text-2xl md:text-3xl'
+  };
+
   return (
     <motion.div 
       key={data.theme}
@@ -1225,7 +1231,7 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
               <p className="text-sm md:text-base uppercase tracking-[0.25em] text-white/90 font-light drop-shadow-md">
                 Nuestra Boda
               </p>
-              <p className="text-lg md:text-xl font-serif text-white drop-shadow-md border-y border-white/30 py-2 px-8">
+              <p className={cn("font-serif text-white drop-shadow-md border-y border-white/30 py-2 px-8", dateSizeClass[data.dateSize || 'mediano'])}>
                 {isValidDate ? format(eventDate, "EEEE d 'de' MMMM, yyyy", { locale: es }) : 'Fecha por confirmar'}
               </p>
             </motion.div>
@@ -1358,7 +1364,7 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 }}
-              className="text-lg opacity-90"
+              className={cn("opacity-90", dateSizeClass[data.dateSize || 'mediano'])}
             >
               {format(eventDate, "EEEE d 'de' MMMM 'de' yyyy", { locale: es })}
             </motion.p>
