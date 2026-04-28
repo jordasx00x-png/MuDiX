@@ -1899,9 +1899,9 @@ export default function Editor() {
                     </p>
                       
                     <div className="flex flex-col items-center w-full">
-                      {data.guests?.find(g => g.id === qrGuestId)?.name ? (
+                      {data.guests?.find(g => g.id === qrGuestId)?.tableNumber ? (
                         <p className="text-[13px] font-sans font-bold tracking-[0.2em] opacity-95 mb-3 text-center uppercase drop-shadow-sm">
-                          - {data.guests.find(g => g.id === qrGuestId)?.name} -
+                          - MESA {data.guests.find(g => g.id === qrGuestId)?.tableNumber} -
                         </p>
                       ) : (
                          <div className="mb-3" />
@@ -1913,11 +1913,6 @@ export default function Editor() {
                             {data.guests?.find(g => g.id === qrGuestId)?.tickets === 0 
                               ? 'ENTRADA LIBRE' 
                               : `${data.guests?.find(g => g.id === qrGuestId)?.tickets || 1} PASE${(data.guests?.find(g => g.id === qrGuestId)?.tickets || 1) !== 1 ? 'S' : ''}`}
-                          </p>
-                         )}
-                         {data.guests?.find(g => g.id === qrGuestId)?.tableNumber && (
-                          <p className="text-[12px] font-sans font-bold tracking-[0.15em] opacity-95 px-3 py-1 bg-black/20 border border-white/40 whitespace-nowrap drop-shadow-sm backdrop-blur-sm">
-                            MESA {data.guests.find(g => g.id === qrGuestId)?.tableNumber}
                           </p>
                          )}
                       </div>
