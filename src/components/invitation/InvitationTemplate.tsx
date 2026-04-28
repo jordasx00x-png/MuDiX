@@ -1231,7 +1231,7 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
               <p className="text-sm md:text-base uppercase tracking-[0.25em] text-white/90 font-light drop-shadow-md">
                 Nuestra Boda
               </p>
-              <p className={cn("font-serif text-white drop-shadow-md border-y border-white/30 py-2 px-8", dateSizeClass[data.dateSize || 'mediano'])}>
+              <p className={cn("font-serif text-white drop-shadow-md border-y border-white/30 py-2 px-8", dateSizeClass[data.dateSize || 'mediano'], data.dateUppercase && "uppercase")}>
                 {isValidDate ? format(eventDate, "EEEE d 'de' MMMM, yyyy", { locale: es }) : 'Fecha por confirmar'}
               </p>
             </motion.div>
@@ -1364,7 +1364,7 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 }}
-              className={cn("opacity-90", dateSizeClass[data.dateSize || 'mediano'])}
+              className={cn("opacity-90", dateSizeClass[data.dateSize || 'mediano'], data.dateUppercase && "uppercase")}
             >
               {format(eventDate, "EEEE d 'de' MMMM 'de' yyyy", { locale: es })}
             </motion.p>
@@ -1546,7 +1546,7 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
               multiline
               className={cn(isWedding ? "opacity-70 mb-8 text-sm md:text-base max-w-sm mx-auto font-light leading-relaxed" : "opacity-80 mb-6 text-sm max-w-xs mx-auto")}
             />
-            <div className={cn("flex items-center justify-center gap-4 mb-10", isWedding ? "opacity-90 text-xl font-serif tracking-widest" : "opacity-90 text-lg")}>
+            <div className={cn("flex items-center justify-center gap-4 mb-10", isWedding ? "opacity-90 text-xl font-serif tracking-widest" : "opacity-90 text-lg", data.dateUppercase && "uppercase")}>
               {isWedding && <span className="w-8 h-px bg-current opacity-30"></span>}
               <span>{data.ceremony?.time}</span>
               {isWedding && <span className="w-8 h-px bg-current opacity-30"></span>}
@@ -1599,7 +1599,7 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
               multiline
               className={cn(isWedding ? "opacity-70 mb-8 text-sm md:text-base max-w-sm mx-auto font-light leading-relaxed" : "opacity-80 mb-6 text-sm max-w-xs mx-auto")}
             />
-            <div className={cn("flex items-center justify-center gap-4 mb-10", isWedding ? "opacity-90 text-xl font-serif tracking-widest" : "opacity-90 text-lg")}>
+            <div className={cn("flex items-center justify-center gap-4 mb-10", isWedding ? "opacity-90 text-xl font-serif tracking-widest" : "opacity-90 text-lg", data.dateUppercase && "uppercase")}>
               {isWedding && <span className="w-8 h-px bg-current opacity-30"></span>}
               <span>{data.reception?.time}</span>
               {isWedding && <span className="w-8 h-px bg-current opacity-30"></span>}

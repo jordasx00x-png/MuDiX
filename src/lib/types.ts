@@ -23,6 +23,7 @@ export interface InvitationData {
   nameSize?: 'pequeño' | 'mediano' | 'grande';
   date: string; // ISO string
   dateSize?: 'pequeño' | 'mediano' | 'grande';
+  dateUppercase?: boolean;
   coverImage?: string;
   coverFrame?: 'none' | 'arch' | 'circle' | 'diamond' | 'flower' | 'vintage';
   instagramHashtag?: string;

@@ -123,7 +123,7 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
                   />
                   <div className="flex flex-col items-center gap-1 opacity-80">
                     <p className="text-sm uppercase tracking-widest">Invitan a su ceremonia de BODA</p>
-                    <p className={cn(dateSizeClass[data.dateSize || 'mediano'])}>
+                    <p className={cn(dateSizeClass[data.dateSize || 'mediano'], data.dateUppercase && "uppercase")}>
                       {isValidDate ? format(eventDate, "EEEE d 'de' MMMM 'de' yyyy", { locale: es }) : 'Fecha por confirmar'}
                     </p>
                   </div>
@@ -237,7 +237,7 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
                     )}
                   </motion.div>
                 )}
-                <p className={cn("opacity-90 mb-4", dateSizeClass[data.dateSize || 'mediano'])}>
+                <p className={cn("opacity-90 mb-4", dateSizeClass[data.dateSize || 'mediano'], data.dateUppercase && "uppercase")}>
                   {isValidDate ? format(eventDate, "EEEE d 'de' MMMM 'de' yyyy", { locale: es }) : 'Fecha por confirmar'}
                 </p>
                 <Countdown targetDate={data.date} />
@@ -298,7 +298,7 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
               />
               <h4 className="text-xl font-bold mb-2">{data.reception.name}</h4>
               <p className="opacity-80 mb-6 text-sm">{data.reception.address}</p>
-              <div className="flex items-center justify-center gap-2 mb-8 opacity-90">
+              <div className={cn("flex items-center justify-center gap-2 mb-8 opacity-90", data.dateUppercase && "uppercase")}>
                 <Clock className="w-4 h-4" />
                 <span>{data.reception.time}</span>
               </div>
@@ -323,7 +323,7 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
               />
               <h4 className="text-xl font-bold mb-2">{data.ceremony.name}</h4>
               <p className="opacity-80 mb-6 text-sm">{data.ceremony.address}</p>
-              <div className="flex items-center justify-center gap-2 mb-8 opacity-90">
+              <div className={cn("flex items-center justify-center gap-2 mb-8 opacity-90", data.dateUppercase && "uppercase")}>
                 <Clock className="w-4 h-4" />
                 <span>{data.ceremony.time}</span>
               </div>
