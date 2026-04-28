@@ -1837,48 +1837,75 @@ export default function Editor() {
               {/* This is the card to be captured */}
               <div 
                 ref={qrRef}
-                className="w-full max-w-[420px] aspect-[3/4.4] relative flex flex-col items-center justify-center text-white text-center overflow-hidden shrink-0 shadow-2xl"
+                className="w-full max-w-[400px] aspect-[9/16] relative flex flex-col items-center justify-between text-white text-center overflow-hidden shrink-0 shadow-2xl"
                 style={{ 
                   backgroundColor: qrColor,
                   backgroundImage: `linear-gradient(180deg, color-mix(in srgb, ${qrColor} 40%, white) 0%, ${qrColor} 100%)`
                 }}
               >
-                <div className="absolute inset-0 p-8 sm:p-10 flex flex-col justify-between">
+                <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-between">
                   {/* Header */}
-                  <div className="space-y-5 z-10 relative mt-2">
-                    <p className="text-[10px] tracking-[0.3em] font-bold uppercase opacity-90 drop-shadow-sm">{data.title}</p>
-                    <div className="inline-flex flex-col items-center">
-                      <p className="text-4xl sm:text-5xl font-serif tracking-widest pb-3 drop-shadow-md">
+                  <div className="flex flex-col items-center mt-4 w-full space-y-5 z-10 relative">
+                    <p className="text-[11px] tracking-[0.4em] font-bold uppercase opacity-90 drop-shadow-sm">{data.title}</p>
+                    <div className="flex flex-col items-center">
+                      <p className="text-5xl sm:text-6xl font-serif tracking-wide pb-4 drop-shadow-md">
                         {data.name}
                       </p>
-                      <div className="w-24 h-[1px] bg-white/40 mt-1" />
+                      <div className="w-32 h-[1px] bg-white/50" />
                     </div>
                   </div>
 
                   {/* Main Action and QR */}
-                  <div className="flex flex-col items-center z-10 relative flex-1 justify-center space-y-10 my-4">
-                    <h2 className="text-4xl sm:text-5xl font-serif font-bold leading-[1.15] shadow-black drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
+                  <div className="flex flex-col items-center z-10 relative flex-1 justify-center space-y-8 mt-2">
+                    <h2 className="text-4xl sm:text-5xl font-serif font-bold leading-[1.15] drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)]">
                       Scanea para<br/>ver<br/>la invitación
                     </h2>
 
-                    <div className="bg-white p-4 sm:p-5 rounded-md shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+                    <div className="bg-white p-4 rounded-md shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
                       <QRCodeSVG 
                         value={`${getPublicUrl()}?guest=${qrGuestId}`} 
                         size={100}
-                        width="160px"
-                        height="160px"
+                        width="180px"
+                        height="180px"
                         level="Q"
                         includeMargin={false}
-                        className="w-48 h-48 sm:w-56 sm:h-56"
+                        className="w-44 h-44 sm:w-52 sm:h-52"
                       />
                     </div>
                   </div>
 
                   {/* Footer Info */}
-                  <div className="w-full z-10 relative pb-2 flex flex-col items-center">
-                    <div className="w-24 h-[1px] bg-white/40 mb-5" />
+                  <div className="w-full z-10 relative pb-2 pt-6 flex flex-col items-center space-y-5">
+                    <div className="w-16 h-[1px] bg-white/50" />
+                    
+                    {data.guests?.find(g => g.id === qrGuestId)?.name && (
+                      <div className="flex flex-col items-center justify-center space-y-4 w-full">
+                        <p className="text-lg sm:text-xl font-serif italic drop-shadow-md px-4">
+                          {data.guests.find(g => g.id === qrGuestId)?.name}
+                        </p>
+                        
+                        <div className="flex items-center justify-center gap-3 w-full">
+                          <div className="px-4 py-1.5 border border-white/40 rounded-full bg-white/10 backdrop-blur-sm">
+                            <p className="text-[9px] sm:text-[10px] tracking-[0.15em] font-bold uppercase shadow-sm">
+                              {data.guests?.find(g => g.id === qrGuestId)?.tickets === 0 
+                                ? 'Entrada Libre' 
+                                : `${data.guests?.find(g => g.id === qrGuestId)?.tickets || 1} Pase${(data.guests?.find(g => g.id === qrGuestId)?.tickets || 1) !== 1 ? 's' : ''}`}
+                            </p>
+                          </div>
+                          
+                          {data.guests?.find(g => g.id === qrGuestId)?.tableNumber && (
+                            <div className="px-4 py-1.5 border border-white/40 rounded-full bg-white/20 backdrop-blur-sm">
+                              <p className="text-[9px] sm:text-[10px] tracking-[0.15em] font-bold uppercase shadow-sm">
+                                Mesa: {data.guests.find(g => g.id === qrGuestId)?.tableNumber}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
                     {data.date && (
-                      <p className="text-[9px] sm:text-[10px] tracking-[0.25em] font-bold uppercase opacity-95 drop-shadow-sm text-center mb-6">
+                      <p className="text-[8px] sm:text-[9px] tracking-[0.25em] font-bold uppercase drop-shadow-sm opacity-90 max-w-[90%] leading-relaxed mt-2">
                         Confirmar asistencia antes del {(() => {
                           try {
                             const [year, month, day] = data.date.split('-');
@@ -1887,28 +1914,6 @@ export default function Editor() {
                           } catch { return '...'; }
                         })()}
                       </p>
-                    )}
-                    
-                    {data.guests?.find(g => g.id === qrGuestId)?.name && (
-                      <div className="w-full max-w-[90%] mx-auto bg-black/10 backdrop-blur-md rounded-xl p-3 border border-white/20 shadow-lg mt-2">
-                        <p className="text-sm font-bold uppercase tracking-[0.15em] text-center truncate mb-2">
-                          {data.guests.find(g => g.id === qrGuestId)?.name}
-                        </p>
-                        <div className="flex gap-2 justify-center items-center">
-                          <div className="px-3 py-1 bg-white/20 rounded-full">
-                            <p className="text-[9px] font-bold tracking-[0.1em] uppercase">
-                              {data.guests?.find(g => g.id === qrGuestId)?.tickets === 0 
-                                ? 'Entrada Libre' 
-                                : `${data.guests?.find(g => g.id === qrGuestId)?.tickets || 1} Pase${(data.guests?.find(g => g.id === qrGuestId)?.tickets || 1) !== 1 ? 's' : ''}`}
-                            </p>
-                          </div>
-                          {data.guests?.find(g => g.id === qrGuestId)?.tableNumber && (
-                            <div className="px-3 py-1 bg-white/20 rounded-full">
-                              <p className="text-[9px] font-bold tracking-[0.1em] uppercase">Mesa: {data.guests.find(g => g.id === qrGuestId)?.tableNumber}</p>
-                            </div>
-                          )}
-                        </div>
-                      </div>
                     )}
                   </div>
                 </div>
