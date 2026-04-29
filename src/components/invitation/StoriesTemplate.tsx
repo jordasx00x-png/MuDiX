@@ -11,6 +11,7 @@ import MusicPlayer from './MusicPlayer';
 import DressCode from './DressCode';
 import { Editable } from './Editable';
 import QRShare from './QRShare';
+import { ElegantBorder } from './DynamicEffects';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -586,26 +587,57 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-center justify-center h-full w-full p-6 text-center"
           >
-            <h3 
-              className={cn("text-4xl mb-4", !theme.accentColor && theme.accent)}
-              style={theme.accentColor ? { color: theme.accentColor } : {}}
-            >
-              RSVP
-            </h3>
-            <p className="opacity-80 mb-2">Por favor confirma tu asistencia.</p>
-            {data.date && (
-              <p className={cn("text-xs font-bold uppercase tracking-widest mb-8", !theme.accentColor && theme.accent)}
-                 style={theme.accentColor ? { color: theme.accentColor } : {}}>
-                Confirmar antes del {(() => {
-                  try {
-                    const [year, month, day] = data.date.split('-');
-                    const d = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-                    return format(subDays(d, 15), "d 'de' MMMM", { locale: es });
-                  } catch { return '...'; }
-                })()}
-              </p>
+            {isWedding ? (
+              <div className="w-full max-w-[90%] mx-auto relative z-10 flex flex-col items-center">
+                <h3 
+                  className={cn("text-4xl md:text-5xl font-serif font-light mb-8 tracking-widest", !theme.accentColor && theme.accent)}
+                  style={theme.accentColor ? { color: theme.accentColor } : {}}
+                >
+                  RSVP
+                </h3>
+                <ElegantBorder className="w-full" glowColor={theme.accentColor || 'rgba(255,255,255,0.3)'}>
+                  <div className="p-8 pb-10">
+                    <p className="opacity-80 mb-2 font-light">Por favor confirma tu asistencia.</p>
+                    {data.date && (
+                      <p className={cn("text-xs font-serif italic mb-8 opacity-70")}
+                         style={theme.accentColor ? { color: theme.accentColor } : {}}>
+                        antes del {(() => {
+                          try {
+                            const [year, month, day] = data.date.split('-');
+                            const d = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                            return format(subDays(d, 15), "d 'de' MMMM", { locale: es });
+                          } catch { return '...'; }
+                        })()}
+                      </p>
+                    )}
+                    <InteractiveRSVP data={data} theme={theme} />
+                  </div>
+                </ElegantBorder>
+              </div>
+            ) : (
+              <>
+                <h3 
+                  className={cn("text-4xl mb-4", !theme.accentColor && theme.accent)}
+                  style={theme.accentColor ? { color: theme.accentColor } : {}}
+                >
+                  RSVP
+                </h3>
+                <p className="opacity-80 mb-2">Por favor confirma tu asistencia.</p>
+                {data.date && (
+                  <p className={cn("text-xs font-bold uppercase tracking-widest mb-8", !theme.accentColor && theme.accent)}
+                     style={theme.accentColor ? { color: theme.accentColor } : {}}>
+                    Confirmar antes del {(() => {
+                      try {
+                        const [year, month, day] = data.date.split('-');
+                        const d = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                        return format(subDays(d, 15), "d 'de' MMMM", { locale: es });
+                      } catch { return '...'; }
+                    })()}
+                  </p>
+                )}
+                <InteractiveRSVP data={data} theme={theme} />
+              </>
             )}
-            <InteractiveRSVP data={data} theme={theme} />
           </motion.div>
         );
       default:

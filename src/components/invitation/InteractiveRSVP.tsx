@@ -78,9 +78,9 @@ export default function InteractiveRSVP({ data, theme }: InteractiveRSVPProps) {
               <button
                 onClick={handleAttend}
                 className={cn(
-                  "w-full flex items-center justify-center gap-2 px-8 py-4 rounded-full text-lg font-bold transition-transform",
+                  "w-full flex items-center justify-center gap-2 px-8 py-4 rounded-full text-lg font-bold font-sans tracking-wide transition-all",
                   !theme.primaryColor && theme.bg,
-                  "text-white shadow-xl ring-2 ring-white/20"
+                  "text-white shadow-xl ring-2 ring-white/20 hover:scale-105 hover:shadow-2xl"
                 )}
                 style={theme.primaryColor ? { backgroundColor: theme.primaryColor } : {}}
               >
@@ -91,7 +91,7 @@ export default function InteractiveRSVP({ data, theme }: InteractiveRSVPProps) {
             <MagneticButton className="w-full">
               <button
                 onClick={handleDecline}
-                className="w-full flex items-center justify-center gap-2 px-8 py-4 rounded-full text-lg font-medium transition-colors hover:bg-black/5 border border-current opacity-70"
+                className="w-full flex items-center justify-center gap-2 px-8 py-4 rounded-full text-lg font-medium font-sans tracking-wide transition-all hover:bg-black/5 hover:scale-105 border border-current opacity-70"
                 style={theme.accentColor ? { color: theme.accentColor, borderColor: theme.accentColor } : {}}
               >
                 <XCircle className="w-5 h-5" />

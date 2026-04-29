@@ -67,13 +67,71 @@ export function MagneticButton({ children, className, style, onClick, power = 0.
       style={{ ...style, x: position.x, y: position.y }}
       animate={{ x: position.x, y: position.y }}
       transition={{ type: "spring", stiffness: 100, damping: 12, mass: 0.1 }}
-      className={cn("inline-block relative group", className)}
+      className={cn("inline-block relative group z-10", className)}
     >
       <motion.div 
         className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite] pointer-events-none rounded-full"
-        style={{ zIndex: -1 }}
+        style={{ zIndex: 1 }}
       />
       {children}
     </motion.div>
+  );
+}
+
+/**
+ * Elegant floating particles for a magical look
+ */
+export function FloatingParticles({ count = 20, color = 'rgba(255,255,255,0.4)' }) {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+      {[...Array(count)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute rounded-full"
+          style={{
+            width: Math.random() * 4 + 1 + 'px',
+            height: Math.random() * 4 + 1 + 'px',
+            backgroundColor: color,
+            left: Math.random() * 100 + '%',
+            top: Math.random() * 100 + '%',
+          }}
+          animate={{
+            y: [0, -Math.random() * 100 - 50],
+            x: [0, Math.random() * 50 - 25],
+            opacity: [0, Math.random() * 0.5 + 0.3, 0],
+            scale: [0, Math.random() + 0.5, 0],
+          }}
+          transition={{
+            duration: Math.random() * 10 + 10,
+            repeat: Infinity,
+            ease: 'linear',
+            delay: Math.random() * 10,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+/**
+ * Animated refined border
+ */
+export function ElegantBorder({ children, className, glowColor = 'rgba(255,255,255,0.2)' }: { children: React.ReactNode, className?: string, glowColor?: string }) {
+  return (
+    <div className={cn("relative group p-[1px] rounded-3xl overflow-hidden", className)}>
+      <motion.div 
+        className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 mix-blend-overlay transition-opacity duration-1000"
+        style={{ background: `radial-gradient(circle at 50% 0%, ${glowColor}, transparent 70%)` }}
+      />
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
+        className="absolute -inset-[100%] opacity-20 pointer-events-none"
+        style={{ background: `conic-gradient(from 0deg, transparent 0 340deg, ${glowColor} 360deg)` }}
+      />
+      <div className="relative h-full w-full bg-black/10 backdrop-blur-sm rounded-[calc(1.5rem-1px)]">
+        {children}
+      </div>
+    </div>
   );
 }

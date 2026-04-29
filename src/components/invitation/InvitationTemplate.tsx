@@ -10,7 +10,7 @@ import MusicPlayer from './MusicPlayer';
 import DressCode from './DressCode';
 import { Editable } from './Editable';
 import QRShare from './QRShare';
-import { InteractiveTilt, MagneticButton } from './DynamicEffects';
+import { InteractiveTilt, MagneticButton, ElegantBorder } from './DynamicEffects';
 
 export const themes = {
 // ... (rest of themes)
@@ -365,6 +365,7 @@ function useMounted() {
 export function FloatingParticles({ theme }: { theme?: string }) {
   const mounted = useMounted();
   const isXV = theme === 'princesa' || theme === 'elegancia' || theme === 'dorado' || theme === 'floral' || theme === 'rose_gold' || theme === 'noche_magica' || theme === 'esmeralda_plata';
+  const isWedding = theme === 'boda_clasica' || theme === 'boda_rustica';
   const isKids = KIDS_THEMES.includes(theme || '');
   const isFloral = theme === 'floral';
   const isForest = theme === 'bosque';
@@ -372,8 +373,8 @@ export function FloatingParticles({ theme }: { theme?: string }) {
   const isSky = theme === 'invierno_magico' || theme === 'estrellas';
   
   const particles = useMemo(() => {
-    return [...Array(isXV ? 70 : 50)].map((_, i) => ({
-      size: Math.random() * (isXV ? 5 : 8) + 2,
+    return [...Array(isXV || isWedding ? 70 : 50)].map((_, i) => ({
+      size: Math.random() * (isXV || isWedding ? 5 : 8) + 2,
       duration: Math.random() * 25 + 20,
       delay: Math.random() * 15,
       left: Math.random() * 100 + '%',
@@ -382,7 +383,7 @@ export function FloatingParticles({ theme }: { theme?: string }) {
       scale: Math.random() * 4 + 1,
       rotation: Math.random() * 720,
     }));
-  }, [isXV]);
+  }, [isXV, isWedding]);
 
   if (!mounted) return null;
 
@@ -394,7 +395,8 @@ export function FloatingParticles({ theme }: { theme?: string }) {
             key={i}
             className={cn(
               "absolute rounded-full",
-              isXV ? "bg-white/40 shadow-[0_0_20px_rgba(255,255,255,0.8)]" : "bg-white/20"
+              isXV ? "bg-white/40 shadow-[0_0_20px_rgba(255,255,255,0.8)]" : 
+              isWedding ? "bg-amber-100/30 shadow-[0_0_15px_rgba(255,240,200,0.5)]" : "bg-white/20"
             )}
             style={{
               width: p.size + 'px',
@@ -407,7 +409,7 @@ export function FloatingParticles({ theme }: { theme?: string }) {
               y: [0, -1200],
               x: [0, p.x],
               scale: [1, p.scale, 0.5],
-              opacity: [0, isXV ? 1 : 0.7, 0],
+              opacity: [0, (isXV || isWedding) ? 1 : 0.7, 0],
               rotate: [0, p.rotation]
             }}
             transition={{
@@ -418,6 +420,7 @@ export function FloatingParticles({ theme }: { theme?: string }) {
             }}
           >
             {isXV && i % 6 === 0 && <Sparkles className="w-full h-full text-white/80 animate-pulse shadow-glow" />}
+            {isWedding && i % 8 === 0 && <Sparkles className="w-full h-full text-amber-100/60 animate-pulse" />}
             {isFloral && i % 8 === 0 && <Flower className="w-full h-full text-rose-200/50" />}
             {isKids && i % 5 === 0 && <Star className="w-full h-full text-yellow-200/50" />}
             {isForest && i % 7 === 0 && <Leaf className="w-full h-full text-emerald-300/40" />}
@@ -1244,7 +1247,7 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
                   value={data.name}
                   isEditing={isEditing}
                   onUpdate={onUpdate}
-                  style={{ ...data.styles?.name, textShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
+                  style={{ ...data.styles?.name, textShadow: '0 4px 20px rgba(0,0,0,0.4)' } as any}
                   className={cn("block font-bold text-white tracking-wide", nameSizeClass[data.nameSize || 'mediano'])}
                   as="h1"
                 />
@@ -1688,49 +1691,60 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
             viewport={{ once: true, margin: "-50px" }}
             className={cn("w-full mx-auto", isWedding ? "max-w-xl space-y-4" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl")}
           >
-            {data.itinerary?.map((item, index) => (
-              <motion.div 
-                key={`${index}-${item.event}`} 
-                variants={itemVariants}
-                whileHover={!isWedding ? { y: -8, scale: 1.02, transition: { duration: 0.3 } } : {}}
-                className={cn(
-                  "relative flex flex-col items-center justify-center text-center group transition-colors duration-500",
-                  isWedding 
-                    ? "py-8 px-4 border-b border-white/5 last:border-0 relative after:content-[''] after:absolute after:bottom-0 after:w-16 after:h-[1px] after:bg-current after:opacity-10 after:left-1/2 after:-translate-x-1/2 last:after:hidden" 
-                    : "p-8 rounded-[2rem] bg-white/5 border border-white/10 backdrop-blur-md shadow-xl hover:bg-white/10 overflow-hidden"
-                )}
-              >
-                {/* Decorative background element */}
-                {!isWedding && (
-                  <div 
-                    className="absolute -top-10 -right-10 w-24 h-24 rounded-full opacity-5 blur-2xl group-hover:opacity-10 transition-opacity"
-                    style={{ backgroundColor: theme.accentColor || '#ffffff' }}
-                  />
-                )}
-                
-                <div 
+            {data.itinerary?.map((item, index) => {
+              const content = (
+                <motion.div 
+                  key={`${index}-${item.event}`} 
+                  variants={itemVariants}
+                  whileHover={!isWedding ? { y: -8, scale: 1.02, transition: { duration: 0.3 } } : { scale: 1.05 }}
                   className={cn(
+                    "relative flex flex-col items-center justify-center text-center group transition-all duration-500",
                     isWedding 
-                      ? "text-lg md:text-xl font-serif tracking-widest opacity-80 mb-2" 
-                      : "text-sm font-mono font-bold tracking-[0.2em] uppercase mb-3 px-4 py-1 rounded-full border border-white/10 bg-white/5",
-                    !theme.accentColor && theme.accent
+                      ? "py-8 px-4 rounded-2xl hover:bg-white/5 relative after:content-[''] after:absolute after:bottom-0 after:w-16 after:h-[1px] after:bg-current after:opacity-10 after:left-1/2 after:-translate-x-1/2 last:after:hidden" 
+                      : "p-8 rounded-[2rem] bg-white/5 border border-white/10 backdrop-blur-md shadow-xl hover:bg-white/10 overflow-hidden"
                   )}
-                  style={theme.accentColor && !isWedding ? { color: theme.accentColor, borderColor: `${theme.accentColor}33` } : (isWedding && theme.accentColor ? { color: theme.accentColor } : {})}
                 >
-                  {item.time}
-                </div>
-                
-                <h5 className={cn(isWedding ? "text-2xl md:text-3xl font-serif font-medium opacity-90" : "text-xl md:text-2xl font-serif font-medium leading-tight")}>
-                  {item.event}
-                </h5>
-                
-                {!isWedding && (
-                  <div className="mt-4 opacity-30 group-hover:opacity-60 transition-opacity">
-                    <Heart className="w-4 h-4" />
+                  {/* Decorative background element */}
+                  {!isWedding && (
+                    <div 
+                      className="absolute -top-10 -right-10 w-24 h-24 rounded-full opacity-5 blur-2xl group-hover:opacity-10 transition-opacity"
+                      style={{ backgroundColor: theme.accentColor || '#ffffff' }}
+                    />
+                  )}
+                  {isWedding && (
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/0 via-current to-black/0 opacity-0 group-hover:opacity-[0.03] transition-opacity rounded-2xl pointer-events-none" />
+                  )}
+                  
+                  <div 
+                    className={cn(
+                      isWedding 
+                        ? "text-lg md:text-xl font-serif tracking-widest opacity-80 mb-2 group-hover:scale-110 transition-transform duration-500" 
+                        : "text-sm font-mono font-bold tracking-[0.2em] uppercase mb-3 px-4 py-1 rounded-full border border-white/10 bg-white/5",
+                      !theme.accentColor && theme.accent
+                    )}
+                    style={theme.accentColor && !isWedding ? { color: theme.accentColor, borderColor: `${theme.accentColor}33` } : (isWedding && theme.accentColor ? { color: theme.accentColor } : {})}
+                  >
+                    {item.time}
                   </div>
-                )}
-              </motion.div>
-            ))}
+                  
+                  <h5 className={cn(isWedding ? "text-2xl md:text-3xl font-serif font-medium opacity-90 group-hover:tracking-wide transition-all duration-500" : "text-xl md:text-2xl font-serif font-medium leading-tight")}>
+                    {item.event}
+                  </h5>
+                  
+                  {!isWedding && (
+                    <div className="mt-4 opacity-30 group-hover:opacity-60 transition-opacity">
+                      <Heart className="w-4 h-4" />
+                    </div>
+                  )}
+                </motion.div>
+              );
+
+              return isWedding ? (
+                <InteractiveTilt key={`${index}-${item.event}`} intensity={10}>
+                  {content}
+                </InteractiveTilt>
+              ) : content;
+            })}
           </motion.div>
         </GlassCard>
 
@@ -1918,25 +1932,29 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
                 as="h3"
                 className={cn("text-5xl md:text-6xl font-serif font-light tracking-widest mb-10", !theme.accentColor && theme.accent)}
               />
-              <div className="px-8 py-10 bg-white/5 border border-white/10 rounded-[2rem] shadow-xl backdrop-blur-sm">
-                <p className="text-lg opacity-80 mb-4 font-light">Por favor confirma tu asistencia</p>
-                {data.date && (
-                   <p className={cn("text-sm font-serif italic mb-10 opacity-70")}
-                      style={theme.accentColor ? { color: theme.accentColor } : {}}>
-                     antes del {(() => {
-                        try {
-                          const [year, month, day] = data.date.split('-');
-                          const d = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-                          return format(subDays(d, 15), "d 'de' MMMM", { locale: es });
-                        } catch { return '...'; }
-                      })()}
-                   </p>
-                )}
-                <div className="flex justify-center">
-                  <div className="scale-110">
-                    <InteractiveRSVP data={data} theme={theme} />
+              <div className="flex justify-center">
+                <ElegantBorder className="w-full max-w-lg" glowColor={theme.accentColor || 'rgba(255,255,255,0.3)'}>
+                  <div className="px-8 py-10 sm:py-14 text-center">
+                    <p className="text-lg opacity-80 mb-4 font-light">Por favor confirma tu asistencia</p>
+                    {data.date && (
+                       <p className={cn("text-sm font-serif italic mb-10 opacity-70")}
+                          style={theme.accentColor ? { color: theme.accentColor } : {}}>
+                         antes del {(() => {
+                            try {
+                              const [year, month, day] = data.date.split('-');
+                              const d = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                              return format(subDays(d, 15), "d 'de' MMMM", { locale: es });
+                            } catch { return '...'; }
+                          })()}
+                       </p>
+                    )}
+                    <div className="flex justify-center">
+                      <div className="scale-100 sm:scale-110 w-full sm:w-auto">
+                        <InteractiveRSVP data={data} theme={theme} />
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </ElegantBorder>
               </div>
             </>
           ) : (
