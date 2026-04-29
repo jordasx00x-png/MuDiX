@@ -49,15 +49,15 @@ export default function MusicPlayer({ url, theme }: MusicPlayerProps) {
     <>
       {/* Reproductor oculto */}
       <div className="hidden">
-        <ReactPlayer
-          url={url}
-          playing={isPlaying}
-          loop={true}
-          volume={1}
-          width="0"
-          height="0"
-          playsinline={true}
-        />
+        <ReactPlayer {...({
+          url: url,
+          playing: isPlaying,
+          loop: true,
+          volume: 1,
+          width: "0",
+          height: "0",
+          playsinline: true
+        } as any)} />
       </div>
 
       {/* Botón Flotante */}

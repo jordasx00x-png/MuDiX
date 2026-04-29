@@ -82,19 +82,19 @@ export default function InteractiveRSVP({ data, theme }: InteractiveRSVPProps) {
                   !theme.primaryColor && theme.bg,
                   "text-white shadow-xl ring-2 ring-white/20 hover:scale-105 hover:shadow-2xl"
                 )}
-                style={theme.primaryColor ? { backgroundColor: theme.primaryColor } : {}}
+                style={theme.primaryColor ? { backgroundColor: theme.primaryColor, textShadow: '0 2px 4px rgba(0,0,0,0.3)' } : { textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}
               >
-                <CheckCircle2 className="w-5 h-5" />
-                ¡Sí, asistiré!
+                <CheckCircle2 className="w-5 h-5 flex-shrink-0 drop-shadow-md" />
+                <span className="drop-shadow-md">¡Sí, asistiré!</span>
               </button>
             </MagneticButton>
             <MagneticButton className="w-full">
               <button
                 onClick={handleDecline}
-                className="w-full flex items-center justify-center gap-2 px-8 py-4 rounded-full text-lg font-medium font-sans tracking-wide transition-all hover:bg-black/5 hover:scale-105 border border-current opacity-70"
-                style={theme.accentColor ? { color: theme.accentColor, borderColor: theme.accentColor } : {}}
+                className="w-full flex items-center justify-center gap-2 px-8 py-4 rounded-full text-lg font-bold font-sans tracking-wide transition-all hover:bg-black/5 hover:scale-105 border-2 border-current opacity-80"
+                style={theme.accentColor ? { color: theme.accentColor, borderColor: theme.accentColor, backgroundColor: 'rgba(255,255,255,0.8)' } : { backgroundColor: 'rgba(255,255,255,0.8)' }}
               >
-                <XCircle className="w-5 h-5" />
+                <XCircle className="w-5 h-5 flex-shrink-0" />
                 No podré asistir
               </button>
             </MagneticButton>

@@ -299,8 +299,32 @@ export const themes = {
     accentBg: 'bg-sky-600/80',
     border: 'border-sky-300',
     font: 'font-sans font-bold',
-    image: 'https://picsum.photos/seed/bluey_dog/1080/1920?blur=1',
-    characterImage: 'https://loremflickr.com/400/400/bluey,dog',
+    image: 'https://images.unsplash.com/photo-1595086861596-3c0762497d3e?auto=format&fit=crop&q=80&width=1080',
+    characterImage: 'https://upload.wikimedia.org/wikipedia/en/e/e0/Bluey_character_from_Bluey.png',
+  },
+  frozen: {
+    bg: 'bg-blue-300',
+    text: 'text-blue-50',
+    accent: 'text-blue-100',
+    accentBg: 'bg-blue-800/30',
+    border: 'border-blue-200/50',
+    font: 'font-serif',
+    primaryColor: '#60a5fa', /* Blue 400 */
+    accentColor: '#e0f2fe', /* Sky 100 */
+    image: 'https://images.unsplash.com/photo-1549487405-c155d95afef3?auto=format&fit=crop&q=80&width=1080', // Ice/Snow background
+    characterImage: 'https://upload.wikimedia.org/wikipedia/en/5/5e/Elsa_from_Disney%27s_Frozen.png',
+  },
+  moana: {
+    bg: 'bg-teal-400',
+    text: 'text-amber-50',
+    accent: 'text-orange-200',
+    accentBg: 'bg-teal-800/40',
+    border: 'border-orange-300/50',
+    font: 'font-serif',
+    primaryColor: '#f97316', /* Orange 500 */
+    accentColor: '#fed7aa', /* Orange 200 */
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&width=1080', // Beach background
+    characterImage: 'https://upload.wikimedia.org/wikipedia/en/6/69/Moana_%28character%29.png',
   },
   mario: {
     bg: 'bg-red-600',
@@ -624,10 +648,84 @@ export function FloatingBalloons() {
   );
 }
 
-export const KIDS_THEMES = ['cumpleanos_infantil', 'superheroe', 'dinosaurio', 'unicornio', 'espacio', 'bluey', 'mario', 'minecraft', 'roblox', 'sonic'];
+export const KIDS_THEMES = ['cumpleanos_infantil', 'superheroe', 'dinosaurio', 'unicornio', 'espacio', 'bluey', 'mario', 'minecraft', 'roblox', 'sonic', 'frozen', 'moana'];
 
-export function CharacterSticker({ theme }: { theme: any }) {
+export function CharacterSticker({ theme, data }: { theme: any, data?: any }) {
   if (!theme.characterImage) return null;
+
+  if (theme.primaryColor === '#60a5fa' && theme.accentColor === '#e0f2fe') { // Frozen
+    return (
+      <motion.div
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 1, type: "spring", bounce: 0.4 }}
+        className="relative w-full max-w-sm mx-auto my-8 pointer-events-auto flex justify-center z-20"
+      >
+        <div className="absolute inset-0 bg-white/20 rounded-full blur-3xl animate-pulse" />
+        <div className="relative w-48 h-56 sm:w-56 sm:h-64 rounded-t-full rounded-b-3xl border-[8px] border-double border-white/80 shadow-[0_0_30px_rgba(255,255,255,0.8)] overflow-hidden bg-white/10 backdrop-blur-sm z-10">
+          <img 
+            src={theme.characterImage} 
+            alt="Character Theme" 
+            className="w-full h-full object-cover"
+            referrerPolicy="no-referrer"
+          />
+        </div>
+        <motion.div 
+          initial={{ x: 50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ delay: 0.5, type: "spring" }}
+          className="absolute -bottom-10 -right-6 w-32 h-40 sm:w-40 sm:h-56 z-20"
+        >
+          <img src="https://upload.wikimedia.org/wikipedia/en/5/5e/Elsa_from_Disney%27s_Frozen.png" alt="Elsa" className="w-full h-full object-contain drop-shadow-2xl" referrerPolicy="no-referrer" />
+        </motion.div>
+      </motion.div>
+    );
+  }
+
+  if (theme.primaryColor === '#38bdf8' && theme.accentColor === '#fbbf24') { // Bluey
+    return (
+      <motion.div
+        initial={{ y: 50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 200, damping: 20 }}
+        className="relative w-72 h-72 sm:w-80 sm:h-80 mx-auto -mt-10 mb-8 z-20 pointer-events-auto"
+      >
+        <div className="absolute inset-0 bg-white/30 rounded-full blur-2xl animate-pulse" />
+        <img 
+          src={theme.characterImage} 
+          alt="Character Theme" 
+          className="w-full h-full object-contain drop-shadow-2xl relative z-10 transform hover:scale-105 transition-transform duration-500"
+          referrerPolicy="no-referrer"
+        />
+      </motion.div>
+    );
+  }
+
+  if (theme.primaryColor === '#f97316' && theme.accentColor === '#14b8a6') { // Moana
+    return (
+      <motion.div
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 1, type: "spring" }}
+        className="relative w-full max-w-sm mx-auto my-4 pointer-events-auto flex flex-col items-center z-20"
+      >
+        <motion.div 
+          animate={{ y: [-5, 5, -5] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          className="w-40 h-40 sm:w-48 sm:h-48 z-20 -mb-10 relative"
+        >
+          <div className="absolute inset-0 bg-white/30 rounded-full blur-2xl animate-pulse" />
+          <img src={theme.characterImage} alt="Moana" className="w-full h-full object-contain drop-shadow-2xl relative z-10" referrerPolicy="no-referrer" />
+        </motion.div>
+        <div className="absolute -left-10 top-20 w-24 h-24 rotate-[-15deg] opacity-80 z-10">
+          <img src="https://images.unsplash.com/photo-1549429188-752178ee7933?auto=format&fit=crop&w=200&q=80" alt="Hibiscus" className="w-full h-full object-cover rounded-full mix-blend-multiply" referrerPolicy="no-referrer" />
+        </div>
+        <div className="absolute -right-10 top-32 w-24 h-24 rotate-[25deg] opacity-80 z-10">
+          <img src="https://images.unsplash.com/photo-1550605177-3e81bd80dfac?auto=format&fit=crop&w=200&q=80" alt="Hibiscus" className="w-full h-full object-cover rounded-full mix-blend-multiply" referrerPolicy="no-referrer" />
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -642,7 +740,7 @@ export function CharacterSticker({ theme }: { theme: any }) {
         rotate: { duration: 4, repeat: Infinity, ease: "easeInOut" },
         y: { duration: 3, repeat: Infinity, ease: "easeInOut" }
       }}
-      className="relative w-32 h-32 md:w-48 md:h-48 mx-auto my-4 z-10"
+      className="relative w-32 h-32 md:w-48 md:h-48 mx-auto my-4 z-10 pointer-events-auto"
     >
       <div className="absolute inset-0 bg-white rounded-full shadow-xl p-2 border-4 border-white overflow-hidden">
         <img 
@@ -675,6 +773,8 @@ export function FloatingIcons({ theme }: { theme: string }) {
     minecraft: [Square, Box, Pickaxe, Sword],
     roblox: [Gamepad, User, Square, Box],
     sonic: [Zap, Circle, Star, FastForward],
+    frozen: [Sparkles, Star, Cloud, Heart],
+    moana: [Flower, Flower2, Heart, Star],
   };
 
   const themeIcons = icons[theme as keyof typeof icons] || [Star, Sparkles];
@@ -728,9 +828,14 @@ export function FloatingIcons({ theme }: { theme: string }) {
   );
 }
 
-export function WobblyText({ text, className, style }: { text: string, className?: string, style?: React.CSSProperties }) {
+export function WobblyText({ text, className, style, showStroke = true }: { text: string, className?: string, style?: React.CSSProperties, showStroke?: boolean }) {
+  const strokeStyle = showStroke ? {
+    WebkitTextStroke: '1px rgba(255,255,255,0.9)',
+    filter: 'drop-shadow(2px 4px 6px rgba(0,0,0,0.3))'
+  } : {};
+
   return (
-    <div className={cn("flex flex-wrap justify-center gap-x-2", className)} style={style}>
+    <div className={cn("flex flex-wrap justify-center gap-x-1 sm:gap-x-2", className)} style={{...style, ...strokeStyle}}>
       {text.split("").map((char, i) => (
         <motion.span
           key={i}
@@ -1081,7 +1186,7 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: any = {
   hidden: { y: 20, opacity: 0 },
   visible: {
     y: 0,
