@@ -796,19 +796,25 @@ export function Countdown({ targetDate }: { targetDate: string }) {
         <motion.div 
           key={item.label} 
           className="flex flex-col items-center"
-          initial={{ scale: 0.5, opacity: 0 }}
+          initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: "spring", bounce: 0.5, delay: 0.6 + (index * 0.1) }}
+          transition={{ type: "spring", bounce: 0.5, delay: 0.3 + (index * 0.05) }}
         >
-          <motion.div 
-            key={item.value}
-            initial={{ y: -10, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            className="text-3xl md:text-4xl font-light mb-1"
-          >
-            {String(item.value).padStart(2, '0')}
-          </motion.div>
-          <div className="text-xs uppercase tracking-widest opacity-70">{item.label}</div>
+          <div className="relative h-10 md:h-12 flex items-center justify-center overflow-hidden">
+            <AnimatePresence mode="popLayout">
+              <motion.div 
+                key={item.value}
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -20, opacity: 0 }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+                className="text-3xl md:text-4xl font-light mb-1"
+              >
+                {String(item.value).padStart(2, '0')}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+          <div className="text-[10px] md:text-xs uppercase tracking-widest opacity-60 mt-1">{item.label}</div>
         </motion.div>
       ))}
     </div>
@@ -1061,6 +1067,29 @@ export function PhotoGallery({ images, theme }: { images: string[], theme: any }
 }
 
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.8,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  },
+};
+
 export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: InvitationData, isEditing?: boolean, onUpdate?: (id: string, value: string, style?: SectionStyle) => void }) {
   const theme = getTheme(data);
   const eventDate = data.date ? new Date(data.date) : new Date();
@@ -1225,15 +1254,20 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.2, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-col items-center gap-3 mt-4 w-full"
+              transition={{ delay: 1.2, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-col items-center gap-5 mt-6 w-full max-w-sm mx-auto"
             >
-              <p className="text-sm md:text-base uppercase tracking-[0.25em] text-white/90 font-light drop-shadow-md">
+              <p className="text-xs md:text-sm uppercase tracking-[0.4em] text-white/80 font-light drop-shadow-md">
                 Nuestra Boda
               </p>
-              <p className={cn("font-serif text-white drop-shadow-md border-y border-white/30 py-2 px-8", dateSizeClass[data.dateSize || 'mediano'], data.dateUppercase && "uppercase")}>
-                {isValidDate ? format(eventDate, "EEEE d 'de' MMMM, yyyy", { locale: es }) : 'Fecha por confirmar'}
-              </p>
+              
+              <div className="flex items-center justify-center w-full gap-4">
+                <div className="h-[1px] flex-grow bg-gradient-to-r from-transparent to-white/40"></div>
+                <p className={cn("font-serif text-white/95 drop-shadow-md px-2", dateSizeClass[data.dateSize || 'mediano'], data.dateUppercase && "uppercase")}>
+                  {isValidDate ? format(eventDate, "EEEE d 'de' MMMM, yyyy", { locale: es }) : 'Fecha por confirmar'}
+                </p>
+                <div className="h-[1px] flex-grow bg-gradient-to-l from-transparent to-white/40"></div>
+              </div>
             </motion.div>
             
             <motion.div 
@@ -1373,24 +1407,24 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
             {/* Parents Section */}
             {(data.parentsNames?.mother || data.parentsNames?.father) && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
                 viewport={{ once: true }}
                 className="mt-12 space-y-4"
               >
-                <div className="space-y-2">
+                <motion.div variants={itemVariants} className="space-y-2">
                   <p className="text-sm uppercase tracking-[0.2em] opacity-60">Con la bendición de mis padres</p>
                   <div className="flex flex-col md:flex-row justify-center items-center gap-2 md:gap-8 text-xl font-medium">
                     {data.parentsNames?.mother && <span>{data.parentsNames.mother}</span>}
                     {data.parentsNames?.mother && data.parentsNames?.father && <span className="hidden md:inline opacity-40">&</span>}
                     {data.parentsNames?.father && <span>{data.parentsNames.father}</span>}
                   </div>
-                </div>
+                </motion.div>
 
                 {data.gratitudeWords && (
                   <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
+                    variants={itemVariants}
                     className="max-w-md mx-auto italic opacity-80 leading-relaxed border-t border-white/10 pt-4"
                   >
                     <Editable
@@ -1647,25 +1681,23 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
             {!isWedding && <div className="h-1 w-12 bg-white/20 rounded-full mt-4" />}
           </div>
           
-          <div className={cn("w-full mx-auto", isWedding ? "max-w-xl space-y-4" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl")}>
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            className={cn("w-full mx-auto", isWedding ? "max-w-xl space-y-4" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl")}
+          >
             {data.itinerary?.map((item, index) => (
               <motion.div 
                 key={`${index}-${item.event}`} 
-                initial={{ opacity: 0, scale: isWedding ? 1 : 0.9, y: 20 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ 
-                  type: "spring", 
-                  stiffness: 100, 
-                  damping: 15, 
-                  delay: index * 0.1 
-                }}
-                whileHover={!isWedding ? { y: -8, transition: { duration: 0.3 } } : {}}
+                variants={itemVariants}
+                whileHover={!isWedding ? { y: -8, scale: 1.02, transition: { duration: 0.3 } } : {}}
                 className={cn(
-                  "relative flex flex-col items-center justify-center text-center group",
+                  "relative flex flex-col items-center justify-center text-center group transition-colors duration-500",
                   isWedding 
-                    ? "py-6 border-b border-white/10 last:border-0" 
-                    : "p-8 rounded-[2rem] bg-white/5 border border-white/10 backdrop-blur-md shadow-xl hover:bg-white/10 transition-all overflow-hidden"
+                    ? "py-8 px-4 border-b border-white/5 last:border-0 relative after:content-[''] after:absolute after:bottom-0 after:w-16 after:h-[1px] after:bg-current after:opacity-10 after:left-1/2 after:-translate-x-1/2 last:after:hidden" 
+                    : "p-8 rounded-[2rem] bg-white/5 border border-white/10 backdrop-blur-md shadow-xl hover:bg-white/10 overflow-hidden"
                 )}
               >
                 {/* Decorative background element */}
@@ -1699,45 +1731,16 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
                 )}
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </GlassCard>
 
         {/* Dress Code */}
         {data.dressCode && (
-          isWedding ? (
-            <ParallaxSection offset={20}>
-              <div className="text-center mb-24 px-6 relative max-w-2xl mx-auto">
-                <div className="flex items-center justify-center gap-4 mb-8 opacity-30">
-                  <span className="w-8 h-px bg-current"></span>
-                  <span className="text-xs tracking-[0.3em] font-light uppercase">Dress Code</span>
-                  <span className="w-8 h-px bg-current"></span>
-                </div>
-                
-                <p className="text-3xl md:text-4xl font-serif font-light mb-8 capitalize">{data.dressCode.style.toLowerCase()}</p>
-                
-                {data.dressCode.colors && data.dressCode.colors.length > 0 && (
-                  <div className="mt-8">
-                    <p className="text-xs uppercase tracking-[0.2em] opacity-50 mb-6 uppercase">Paleta sugerida</p>
-                    <div className="flex justify-center gap-4 flex-wrap">
-                      {data.dressCode.colors.map((color, index) => (
-                        <motion.div
-                          key={index}
-                          initial={{ scale: 0, opacity: 0 }}
-                          whileInView={{ scale: 1, opacity: 1 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: index * 0.1, type: "spring" }}
-                          className="w-12 h-12 rounded-none rotate-45 border border-white/20 shadow-xl"
-                          style={{ backgroundColor: color }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </ParallaxSection>
-          ) : (
-            <DressCode data={data} theme={theme} />
-          )
+          <ParallaxSection offset={20}>
+            <div className="flex justify-center w-full">
+              <DressCode data={data} theme={theme} isWedding={isWedding} />
+            </div>
+          </ParallaxSection>
         )}
 
         {/* Gallery & Instagram */}

@@ -12,6 +12,29 @@ import DressCode from './DressCode';
 import { Editable } from './Editable';
 import QRShare from './QRShare';
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.6,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  },
+};
+
 export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: InvitationData, isEditing?: boolean, onUpdate?: (id: string, value: string, style?: SectionStyle) => void }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const theme = getTheme(data);
@@ -77,9 +100,9 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
         return (
           <motion.div 
             key="cover" 
-            initial={{ opacity: 0, scale: 0.95, filter: "blur(4px)" }} 
-            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }} 
-            exit={{ opacity: 0, scale: 1.05, filter: "blur(4px)" }} 
+            initial={{ opacity: 0, x: 100, filter: "blur(4px)" }} 
+            animate={{ opacity: 1, x: 0, filter: "blur(0px)" }} 
+            exit={{ opacity: 0, x: -100, filter: "blur(4px)" }} 
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="relative h-full w-full flex flex-col items-center justify-center text-center p-6 overflow-hidden"
           >
@@ -102,43 +125,58 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
                   }}
                 />
                 
-                <div className="relative z-20 flex flex-col items-center justify-center space-y-4">
-                  <Editable
-                    id="title"
-                    value={data.title}
-                    isEditing={isEditing}
-                    onUpdate={onUpdate}
-                    style={{ ...data.styles?.title, fontFamily: data.styles?.title?.fontFamily || theme.titleFont || undefined }}
-                    className={cn("block tracking-[0.3em] uppercase opacity-70", titleSizeClass[data.titleSize || 'mediano'])}
-                    as="h2"
-                  />
-                  <Editable
-                    id="name"
-                    value={data.name}
-                    isEditing={isEditing}
-                    onUpdate={onUpdate}
-                    style={{ ...data.styles?.name, fontFamily: data.styles?.name?.fontFamily || theme.nameFont || undefined }}
-                    className={cn("block font-bold", nameSizeClass[data.nameSize || 'mediano'])}
-                    as="h1"
-                  />
-                  <div className="flex flex-col items-center gap-1 opacity-80">
-                    <p className="text-sm uppercase tracking-widest">Invitan a su ceremonia de BODA</p>
-                    <p className={cn(dateSizeClass[data.dateSize || 'mediano'], data.dateUppercase && "uppercase")}>
-                      {isValidDate ? format(eventDate, "EEEE d 'de' MMMM 'de' yyyy", { locale: es }) : 'Fecha por confirmar'}
-                    </p>
-                  </div>
-                  <Countdown targetDate={data.date} />
+                <motion.div 
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                  className="relative z-20 flex flex-col items-center justify-center space-y-4"
+                >
+                  <motion.div variants={itemVariants}>
+                    <Editable
+                      id="title"
+                      value={data.title}
+                      isEditing={isEditing}
+                      onUpdate={onUpdate}
+                      style={{ ...data.styles?.title, fontFamily: data.styles?.title?.fontFamily || theme.titleFont || undefined }}
+                      className={cn("block tracking-[0.3em] uppercase opacity-70", titleSizeClass[data.titleSize || 'mediano'])}
+                      as="h2"
+                    />
+                  </motion.div>
+                  <motion.div variants={itemVariants}>
+                    <Editable
+                      id="name"
+                      value={data.name}
+                      isEditing={isEditing}
+                      onUpdate={onUpdate}
+                      style={{ ...data.styles?.name, fontFamily: data.styles?.name?.fontFamily || theme.nameFont || undefined }}
+                      className={cn("block font-bold", nameSizeClass[data.nameSize || 'mediano'])}
+                      as="h1"
+                    />
+                  </motion.div>
+                  <motion.div variants={itemVariants} className="flex flex-col items-center gap-3 opacity-90 mt-4 w-full">
+                    <p className="text-[10px] md:text-sm uppercase tracking-[0.4em] font-light">Invitan a su Boda</p>
+                    <div className="flex items-center justify-center w-full gap-4 max-w-[80%] mx-auto">
+                      <div className="h-[1px] flex-grow bg-gradient-to-r from-transparent to-current opacity-40"></div>
+                      <p className={cn("font-serif px-2 drop-shadow-md", dateSizeClass[data.dateSize || 'mediano'], data.dateUppercase && "uppercase")}>
+                        {isValidDate ? format(eventDate, "EEEE d 'de' MMMM, yyyy", { locale: es }) : 'Fecha por confirmar'}
+                      </p>
+                      <div className="h-[1px] flex-grow bg-gradient-to-l from-transparent to-current opacity-40"></div>
+                    </div>
+                  </motion.div>
+                  <motion.div variants={itemVariants}>
+                    <Countdown targetDate={data.date} />
+                  </motion.div>
                   {(data.parentsNames?.mother || data.parentsNames?.father) && (
-                    <div className="mt-6 space-y-3">
-                      <div className="space-y-1">
-                        <p className="text-[10px] uppercase tracking-[0.2em] opacity-60">Con la bendición de nuestros padres</p>
-                        <div className="flex flex-col gap-1 text-sm font-medium opacity-90">
-                          {data.parentsNames?.mother && <span>{data.parentsNames.mother}</span>}
-                          {data.parentsNames?.father && <span>{data.parentsNames.father}</span>}
+                    <motion.div variants={itemVariants} className="mt-8 space-y-4">
+                      <div className="space-y-4">
+                        <p className="text-[9px] uppercase tracking-[0.3em] opacity-50">Con la bendición de nuestros padres</p>
+                        <div className="flex flex-col gap-2 items-center justify-center pt-1 opacity-90">
+                          {data.parentsNames?.mother && <span className="font-serif">{data.parentsNames.mother}</span>}
+                          {data.parentsNames?.father && <span className="font-serif">{data.parentsNames.father}</span>}
                         </div>
                       </div>
                       {data.gratitudeWords && (
-                        <div className="max-w-[200px] leading-relaxed border-t border-white/10 pt-2">
+                        <div className="max-w-[220px] mx-auto italic leading-relaxed border-t border-white/10 pt-4 font-serif text-sm opacity-80">
                           <Editable
                             id="gratitudeWords"
                             value={data.gratitudeWords}
@@ -150,9 +188,9 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
                           />
                         </div>
                       )}
-                    </div>
+                    </motion.div>
                   )}
-                </div>
+                </motion.div>
               </>
             ) : (
               <>
@@ -249,9 +287,9 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
         return (
           <motion.div 
             key="guest"
-            initial={{ opacity: 0, scale: 0.95, y: 20 }} 
-            animate={{ opacity: 1, scale: 1, y: 0 }} 
-            exit={{ opacity: 0, scale: 1.05, y: -20 }} 
+            initial={{ opacity: 0, x: 100 }} 
+            animate={{ opacity: 1, x: 0 }} 
+            exit={{ opacity: 0, x: -100 }} 
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-center justify-center h-full text-center p-8"
           >
@@ -284,59 +322,71 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
         return (
           <motion.div 
             key="locations" 
-            initial={{ opacity: 0, scale: 0.95, y: 20 }} 
-            animate={{ opacity: 1, scale: 1, y: 0 }} 
-            exit={{ opacity: 0, scale: 1.05, y: -20 }} 
+            initial={{ opacity: 0, x: 100 }} 
+            animate={{ opacity: 1, x: 0 }} 
+            exit={{ opacity: 0, x: -100 }} 
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-center justify-center h-full w-full p-6 space-y-8"
           >
-            <GlassCard theme={theme} className="w-full max-w-sm">
+            <GlassCard theme={theme} className={cn("w-full max-w-sm", isWedding && "py-8 border-[1px] rounded-[2rem]")}>
               <RevealText 
                 text="Recepción"
-                className={cn("text-2xl font-bold mb-4", !theme.accentColor && theme.accent)}
+                className={cn(isWedding ? "text-3xl font-serif font-light mb-4 tracking-widest" : "text-2xl font-bold mb-4", !theme.accentColor && theme.accent)}
                 style={theme.accentColor ? { color: theme.accentColor } : {}}
               />
-              <h4 className="text-xl font-bold mb-2">{data.reception.name}</h4>
-              <p className="opacity-80 mb-6 text-sm">{data.reception.address}</p>
-              <div className={cn("flex items-center justify-center gap-2 mb-8 opacity-90", data.dateUppercase && "uppercase")}>
-                <Clock className="w-4 h-4" />
+              <h4 className={cn("mb-2", isWedding ? "text-xl font-serif font-medium" : "text-xl font-bold")}>{data.reception.name}</h4>
+              <p className={cn("opacity-80 text-sm", isWedding ? "mb-4 font-light leading-relaxed px-4" : "mb-6")}>{data.reception.address}</p>
+              <div className={cn("flex items-center justify-center gap-3 mb-8 opacity-90", isWedding && "font-serif tracking-widest text-lg")}>
+                {!isWedding && <Clock className="w-4 h-4" />}
+                {isWedding && <div className="w-4 h-px bg-current opacity-40"></div>}
                 <span>{data.reception.time}</span>
+                {isWedding && <div className="w-4 h-px bg-current opacity-40"></div>}
               </div>
               <a 
                 href={data.reception.mapUrl} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className={cn("inline-flex items-center gap-2 px-6 py-3 rounded-full border transition-all hover:bg-white/10 relative z-50 pointer-events-auto", !theme.accentColor && theme.border)} 
-                style={theme.accentColor ? { borderColor: theme.accentColor, color: theme.accentColor } : {}}
+                className={cn(
+                  "inline-flex items-center gap-2 transition-all relative z-50 pointer-events-auto", 
+                  isWedding ? "px-6 py-2 border-b border-current font-medium uppercase tracking-widest text-[10px] hover:opacity-70" : "px-6 py-3 rounded-full border hover:bg-white/10",
+                  !theme.accentColor && theme.border
+                )} 
+                style={theme.accentColor && !isWedding ? { borderColor: theme.accentColor, color: theme.accentColor } : (isWedding && theme.accentColor ? { color: theme.accentColor } : {})}
                 onClick={e => e.stopPropagation()}
               >
-                <MapPin className="w-4 h-4" />
-                <span className="font-bold uppercase tracking-wider text-xs">Ver Ubicación</span>
+                {!isWedding && <MapPin className="w-4 h-4" />}
+                <span className={cn(isWedding ? "" : "font-bold uppercase tracking-wider text-xs")}>Ver Ubicación</span>
               </a>
             </GlassCard>
 
-            <GlassCard theme={theme} delay={0.2} className="w-full max-w-sm">
+            <GlassCard theme={theme} delay={0.2} className={cn("w-full max-w-sm", isWedding && "py-8 border-[1px] rounded-[2rem]")}>
               <RevealText 
                 text="Ceremonia"
-                className={cn("text-2xl font-bold mb-4", !theme.accentColor && theme.accent)}
+                className={cn(isWedding ? "text-3xl font-serif font-light mb-4 tracking-widest" : "text-2xl font-bold mb-4", !theme.accentColor && theme.accent)}
                 style={theme.accentColor ? { color: theme.accentColor } : {}}
               />
-              <h4 className="text-xl font-bold mb-2">{data.ceremony.name}</h4>
-              <p className="opacity-80 mb-6 text-sm">{data.ceremony.address}</p>
-              <div className={cn("flex items-center justify-center gap-2 mb-8 opacity-90", data.dateUppercase && "uppercase")}>
-                <Clock className="w-4 h-4" />
+              <h4 className={cn("mb-2", isWedding ? "text-xl font-serif font-medium" : "text-xl font-bold")}>{data.ceremony.name}</h4>
+              <p className={cn("opacity-80 text-sm", isWedding ? "mb-4 font-light leading-relaxed px-4" : "mb-6")}>{data.ceremony.address}</p>
+              <div className={cn("flex items-center justify-center gap-3 mb-8 opacity-90", isWedding && "font-serif tracking-widest text-lg")}>
+                {!isWedding && <Clock className="w-4 h-4" />}
+                {isWedding && <div className="w-4 h-px bg-current opacity-40"></div>}
                 <span>{data.ceremony.time}</span>
+                {isWedding && <div className="w-4 h-px bg-current opacity-40"></div>}
               </div>
               <a 
                 href={data.ceremony.mapUrl} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className={cn("inline-flex items-center gap-2 px-6 py-3 rounded-full border transition-all hover:bg-white/10 relative z-50 pointer-events-auto", !theme.accentColor && theme.border)} 
-                style={theme.accentColor ? { borderColor: theme.accentColor, color: theme.accentColor } : {}}
+                className={cn(
+                  "inline-flex items-center gap-2 transition-all relative z-50 pointer-events-auto", 
+                  isWedding ? "px-6 py-2 border-b border-current font-medium uppercase tracking-widest text-[10px] hover:opacity-70" : "px-6 py-3 rounded-full border hover:bg-white/10",
+                  !theme.accentColor && theme.border
+                )} 
+                style={theme.accentColor && !isWedding ? { borderColor: theme.accentColor, color: theme.accentColor } : (isWedding && theme.accentColor ? { color: theme.accentColor } : {})}
                 onClick={e => e.stopPropagation()}
               >
-                <MapPin className="w-4 h-4" />
-                <span className="font-bold uppercase tracking-wider text-xs">Ver Ubicación</span>
+                {!isWedding && <MapPin className="w-4 h-4" />}
+                <span className={cn(isWedding ? "" : "font-bold uppercase tracking-wider text-xs")}>Ver Ubicación</span>
               </a>
             </GlassCard>
           </motion.div>
@@ -345,22 +395,22 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
         return (
           <motion.div 
             key="dressCode" 
-            initial={{ opacity: 0, scale: 0.95, y: 20 }} 
-            animate={{ opacity: 1, scale: 1, y: 0 }} 
-            exit={{ opacity: 0, scale: 1.05, y: -20 }} 
+            initial={{ opacity: 0, x: 100 }} 
+            animate={{ opacity: 1, x: 0 }} 
+            exit={{ opacity: 0, x: -100 }} 
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-center justify-center h-full w-full p-6"
           >
-            <DressCode data={data} theme={theme} />
+            <DressCode data={data} theme={theme} isWedding={isWedding} />
           </motion.div>
         );
       case 'itinerary':
         return (
           <motion.div 
             key="itinerary" 
-            initial={{ opacity: 0, scale: 0.95, y: 20 }} 
-            animate={{ opacity: 1, scale: 1, y: 0 }} 
-            exit={{ opacity: 0, scale: 1.05, y: -20 }} 
+            initial={{ opacity: 0, x: 100 }} 
+            animate={{ opacity: 1, x: 0 }} 
+            exit={{ opacity: 0, x: -100 }} 
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-center justify-center h-full w-full p-6"
           >
@@ -370,9 +420,18 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
                 className={cn("text-2xl font-bold mb-8", !theme.accentColor && theme.accent)}
                 style={theme.accentColor ? { color: theme.accentColor } : {}}
               />
-              <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2 hide-scrollbar">
+              <motion.div 
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="space-y-4 max-h-[60vh] overflow-y-auto pr-2 hide-scrollbar"
+              >
                 {(data.itinerary || []).map((item, idx) => (
-                  <div key={idx} className="flex flex-col gap-2 items-center group">
+                  <motion.div 
+                    key={idx} 
+                    variants={itemVariants}
+                    className="flex flex-col gap-2 items-center group"
+                  >
                     <div 
                       className={cn("w-10 h-10 rounded-full flex items-center justify-center shrink-0 border-2 transition-transform group-hover:scale-110 shadow-xl", !theme.accentColor && theme.border, !theme.accentColor && theme.accent)}
                       style={theme.accentColor ? { borderColor: theme.accentColor, color: theme.accentColor } : {}}
@@ -388,9 +447,9 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
                       </p>
                       <p className="font-medium text-sm">{item.event}</p>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             </GlassCard>
           </motion.div>
         );
@@ -398,9 +457,9 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
         return (
           <motion.div 
             key="gallery" 
-            initial={{ opacity: 0, scale: 0.95, y: 20 }} 
-            animate={{ opacity: 1, scale: 1, y: 0 }} 
-            exit={{ opacity: 0, scale: 1.05, y: -20 }} 
+            initial={{ opacity: 0, x: 100 }} 
+            animate={{ opacity: 1, x: 0 }} 
+            exit={{ opacity: 0, x: -100 }} 
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-center justify-center h-full w-full p-6"
           >
@@ -443,9 +502,9 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
         return (
           <motion.div 
             key="gifts" 
-            initial={{ opacity: 0, scale: 0.95, y: 20 }} 
-            animate={{ opacity: 1, scale: 1, y: 0 }} 
-            exit={{ opacity: 0, scale: 1.05, y: -20 }} 
+            initial={{ opacity: 0, x: 100 }} 
+            animate={{ opacity: 1, x: 0 }} 
+            exit={{ opacity: 0, x: -100 }} 
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-center justify-center h-full w-full p-6"
           >
@@ -521,9 +580,9 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
         return (
           <motion.div 
             key="rsvp" 
-            initial={{ opacity: 0, scale: 0.95, y: 20 }} 
-            animate={{ opacity: 1, scale: 1, y: 0 }} 
-            exit={{ opacity: 0, scale: 1.05, y: -20 }} 
+            initial={{ opacity: 0, x: 100 }} 
+            animate={{ opacity: 1, x: 0 }} 
+            exit={{ opacity: 0, x: -100 }} 
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-center justify-center h-full w-full p-6 text-center"
           >
