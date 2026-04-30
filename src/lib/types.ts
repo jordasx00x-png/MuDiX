@@ -19,6 +19,8 @@ export interface InvitationData {
   theme: 'bosque' | 'bridgerton' | 'princesa' | 'elegancia' | 'floral' | 'estrellas' | 'dorado' | 'rose_gold' | 'noche_magica' | 'esmeralda_plata' | 'minimalista' | 'rojo_pasion' | 'vino_tinto' | 'carmesi' | 'mariposa_azul' | 'vintage_sepia' | 'neon_party' | 'invierno_magico' | 'atardecer_tropical' | 'boda_clasica' | 'boda_rustica' | 'cumpleanos_infantil' | 'baby_shower' | 'graduacion' | 'bautizo' | 'aniversario' | 'superheroe' | 'dinosaurio' | 'unicornio' | 'espacio' | 'bluey' | 'mario' | 'minecraft' | 'roblox' | 'sonic';
   title: string;
   titleSize?: 'pequeño' | 'mediano' | 'grande';
+  guestName?: string;
+  guestNameSize?: 'pequeño' | 'mediano' | 'grande';
   name: string;
   nameSize?: 'pequeño' | 'mediano' | 'grande';
   date: string; // ISO string

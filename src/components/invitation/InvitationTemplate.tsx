@@ -1206,6 +1206,17 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
   const isKidsBirthday = KIDS_THEMES.includes(data.theme);
   const isXV = data.title?.toLowerCase().includes('xv') || data.theme === 'princesa' || data.theme === 'elegancia' || data.theme === 'rose_gold' || data.theme === 'noche_magica' || data.theme === 'esmeralda_plata';
 
+  const guestUrlParam = useMemo(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('guest') || params.get('familia');
+    } catch {
+      return null;
+    }
+  }, []);
+
+  const displayGuestName = guestUrlParam || data.guestName;
+
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 800], [0, 250]);
   const bgY = useTransform(scrollY, [0, 2000], [0, 400]);
@@ -1223,9 +1234,15 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
   };
 
   const titleSizeClass = {
-    'pequeño': 'text-sm md:text-base',
-    'mediano': 'text-xl md:text-2xl',
-    'grande': 'text-3xl md:text-4xl'
+    'pequeño': 'text-xs md:text-sm',
+    'mediano': 'text-base md:text-xl',
+    'grande': 'text-2xl md:text-3xl'
+  };
+
+  const guestSizeClass = {
+    'pequeño': 'text-xs md:text-sm',
+    'mediano': 'text-sm md:text-base',
+    'grande': 'text-lg md:text-xl'
   };
 
   const nameSizeClass = {
@@ -1314,6 +1331,30 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
           <div className="absolute inset-6 sm:inset-10 z-20 pointer-events-none border-[1px] border-white/20 rounded-t-full mix-blend-overlay" />
           
           <div className="relative z-30 flex flex-col h-full items-center justify-center space-y-6 pt-24 pb-16 px-6 max-w-2xl mt-auto">
+            {(displayGuestName || isEditing) && (
+              <motion.div 
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.3, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                className="mb-4"
+              >
+                {isEditing ? (
+                  <Editable
+                    id="guestName"
+                    value={data.guestName || "Flias. Especiales"}
+                    isEditing={isEditing}
+                    onUpdate={onUpdate}
+                    className={cn("block font-serif text-white/90 italic drop-shadow-md", guestSizeClass[data.guestNameSize || 'mediano'])}
+                    as="div"
+                  />
+                ) : (
+                  <div className={cn("block font-serif text-white/90 italic drop-shadow-md", guestSizeClass[data.guestNameSize || 'mediano'])}>
+                    {displayGuestName}
+                  </div>
+                )}
+              </motion.div>
+            )}
+
             <motion.div 
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -1411,6 +1452,32 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
             className="text-center mb-16 pt-12"
           >
             <CharacterSticker theme={theme} />
+            
+            {(displayGuestName || isEditing) && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="mb-6 font-serif italic text-white/80"
+                style={theme.text ? { color: 'inherit', opacity: 0.8 } : {}}
+              >
+                {isEditing ? (
+                  <Editable
+                    id="guestName"
+                    value={data.guestName || "Flias. Especiales"}
+                    isEditing={isEditing}
+                    onUpdate={onUpdate}
+                    className={cn("block drop-shadow-md", guestSizeClass[data.guestNameSize || 'mediano'])}
+                    as="div"
+                  />
+                ) : (
+                  <div className={cn("block drop-shadow-md", guestSizeClass[data.guestNameSize || 'mediano'])}>
+                    {displayGuestName}
+                  </div>
+                )}
+              </motion.div>
+            )}
+
             <motion.div 
               initial={{ opacity: 0, y: -20, letterSpacing: "0em" }}
               animate={{ opacity: 1, y: 0, letterSpacing: "0.3em" }}
