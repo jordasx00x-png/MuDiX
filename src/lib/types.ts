@@ -59,7 +59,6 @@ export interface InvitationData {
     time: string;
     event: string;
   }[];
-  guestName?: string;
   guestCount?: number;
   guests?: Guest[];
   primaryColor?: string;

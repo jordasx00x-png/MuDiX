@@ -1859,7 +1859,7 @@ export default function Editor() {
               {/* This is the card to be captured */}
               <div 
                 ref={qrRef}
-                className="w-[380px] h-[520px] sm:w-[400px] sm:h-[550px] relative flex flex-col items-center flex-shrink-0 shadow-2xl bg-white overflow-hidden"
+                className="w-[380px] h-[600px] sm:w-[400px] sm:h-[650px] relative flex flex-col items-center flex-shrink-0 shadow-2xl bg-white overflow-hidden"
                 style={{ 
                   backgroundColor: qrColor,
                   backgroundImage: `linear-gradient(to bottom, color-mix(in srgb, ${qrColor} 10%, white) 0%, ${qrColor} 30%, color-mix(in srgb, ${qrColor} 40%, black) 100%)`
@@ -1871,19 +1871,36 @@ export default function Editor() {
                     <p className="text-[11px] font-sans font-bold uppercase tracking-[0.35em] text-white opacity-95 mb-3 drop-shadow-sm">
                       {data.title || 'MIS XV AÑOS'}
                     </p>
-                    <p className="text-[34px] sm:text-[36px] font-sans font-medium uppercase tracking-[0.25em] text-white mb-5 drop-shadow-md leading-none text-center">
+                    <p className="text-[34px] sm:text-[36px] font-sans font-medium uppercase tracking-[0.25em] text-white mb-5 drop-shadow-md leading-none text-center flex-shrink-0">
                       {data.name || 'N I C O L E'}
                     </p>
                     <div className="w-[85%] h-[1px] bg-white opacity-90 shadow-sm" />
                   </div>
 
                   {/* Main Action and QR */}
-                  <div className="flex flex-col items-center z-10 relative flex-1 justify-center w-full mt-4">
+                  <div className="flex flex-col items-center z-10 relative flex-1 justify-center w-full mt-2">
+                    
+                    {qrGuestId && data.guests?.find(g => g.id === qrGuestId)?.name ? (
+                      <div className="mb-6 flex flex-col items-center">
+                        <p className="text-[10px] font-sans font-bold uppercase tracking-[0.3em] text-white/80 mb-2 drop-shadow-sm">
+                          RESERVADO PARA
+                        </p>
+                        <p 
+                           className="text-[20px] sm:text-[22px] text-white text-center italic drop-shadow-md break-words max-w-[320px]"
+                           style={{ fontFamily: '"Playfair Display", Georgia, serif', lineHeight: 1.2 }}
+                        >
+                          {data.guests.find(g => g.id === qrGuestId)?.name}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="mb-4" />
+                    )}
+
                     <h2 
-                      className="text-[40px] sm:text-[44px] text-white text-center font-bold leading-[1.05] drop-shadow-md mb-8"
+                      className="text-[36px] sm:text-[40px] text-white text-center font-bold leading-[1.05] drop-shadow-md mb-6"
                       style={{ fontFamily: '"Playfair Display", Georgia, serif', letterSpacing: '-0.02em', textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}
                     >
-                      Scanea para ver<br/>la invitacion
+                      Scanea para ver<br/>la invitación
                     </h2>
 
                     <div className="relative isolate">
@@ -1906,10 +1923,10 @@ export default function Editor() {
                   </div>
 
                   {/* Footer Info */}
-                  <div className="w-full z-10 relative pt-8 flex flex-col items-center justify-end text-white">
-                    <div className="w-[85%] h-[1px] bg-white opacity-90 mb-5 shadow-sm" />
+                  <div className="w-full z-10 relative pt-6 flex flex-col items-center justify-end text-white">
+                    <div className="w-[85%] h-[1px] bg-white opacity-90 mb-4 shadow-sm" />
                     
-                    <p className="text-[11px] font-sans font-bold uppercase tracking-[0.25em] drop-shadow-sm opacity-95 text-center mb-4">
+                    <p className="text-[11px] font-sans font-bold uppercase tracking-[0.25em] drop-shadow-sm opacity-95 text-center mb-3">
                       CONFIRMAR ANTES DEL {(() => {
                         try {
                           if (!data.date) return '15 DE MAYO';
