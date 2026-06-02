@@ -12,6 +12,7 @@ import DressCode from './DressCode';
 import { Editable } from './Editable';
 import QRShare from './QRShare';
 import { ElegantBorder } from './DynamicEffects';
+import { AdBanner } from '../AdBanner';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -699,6 +700,9 @@ export default function StoriesTemplate({ data, isEditing, onUpdate }: { data: I
                 <InteractiveRSVP data={data} theme={theme} />
               </>
             )}
+            <div className="w-full relative z-10 mt-8">
+              <AdBanner />
+            </div>
           </motion.div>
         );
       default:

@@ -11,6 +11,7 @@ import DressCode from './DressCode';
 import { Editable } from './Editable';
 import QRShare from './QRShare';
 import { InteractiveTilt, MagneticButton, ElegantBorder } from './DynamicEffects';
+import { AdBanner } from '../AdBanner';
 
 export const themes = {
 // ... (rest of themes)
@@ -2157,6 +2158,9 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
             </>
           )}
         </motion.div>
+      </div>
+      <div className="w-full relative z-10 bg-white/5 pb-10">
+        <AdBanner />
       </div>
     </motion.div>
   );
