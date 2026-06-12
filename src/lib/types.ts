@@ -46,6 +46,7 @@ export interface InvitationData {
   dressCode?: {
     style: string;
     colors: string[];
+    forbiddenColors?: string[];
   };
   musicUrl?: string;
   gifts: {
@@ -112,6 +113,7 @@ export const defaultInvitation: InvitationData = {
   dressCode: {
     style: 'Formal',
     colors: ['#000000', '#ffffff', '#ffd700'],
+    forbiddenColors: [],
   },
   gifts: {
     envelope: true,

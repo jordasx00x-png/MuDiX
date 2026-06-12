@@ -24,6 +24,16 @@ const TEMPLATE_DATA: Record<string, Partial<InvitationData>> = {
     coverImage: 'https://picsum.photos/seed/wedding/800/1200',
     instagramHashtag: '#BodaAnaYCarlos',
   },
+  wedding_premium: {
+    theme: 'boda_premium',
+    title: 'Nuestra Boda',
+    name: 'Ana & Carlos',
+    primaryColor: '#FDFBF7',
+    accentColor: '#AF9462',
+    date: '2026-09-20T18:00:00.000Z',
+    coverImage: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1080&auto=format&fit=crop',
+    instagramHashtag: '#BodaAnaYCarlos',
+  },
   quinceanera: {
     theme: 'bosque',
     title: 'Mis XV Años',
@@ -261,6 +271,20 @@ export default function Editor() {
       }
       return { ...prev, [field]: value };
     });
+  };
+
+  const handleFontSizeChange = (sectionId: string, value: string) => {
+    setIsDirty(true);
+    setData(prev => ({
+      ...prev,
+      styles: {
+        ...prev.styles,
+        [sectionId]: {
+          ...prev.styles?.[sectionId],
+          fontSize: value
+        }
+      }
+    }));
   };
 
   const handleSectionUpdate = (id: string, value: string, style?: SectionStyle) => {
@@ -835,6 +859,52 @@ export default function Editor() {
                     <option value="grande">Grande</option>
                   </select>
                 </div>
+                
+                <div className="mt-4 p-3 bg-gray-50 rounded-xl border border-gray-100 space-y-3">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Tamaños de letra Portada (puntos)</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div>
+                      <label className="block text-[10px] text-gray-500 mb-1 italic">Título</label>
+                      <input 
+                        type="number"
+                        value={parseInt(data.styles?.title?.fontSize || '0') || ''}
+                        onChange={(e) => handleFontSizeChange('title', e.target.value ? `${e.target.value}px` : '')}
+                        placeholder="Ej. 14"
+                        className="w-full px-2 py-1 text-xs border rounded outline-none focus:ring-1 focus:ring-primary-500 bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-gray-500 mb-1 italic">Nombre</label>
+                      <input 
+                        type="number"
+                        value={parseInt(data.styles?.name?.fontSize || '0') || ''}
+                        onChange={(e) => handleFontSizeChange('name', e.target.value ? `${e.target.value}px` : '')}
+                        placeholder="Ej. 64"
+                        className="w-full px-2 py-1 text-xs border rounded outline-none focus:ring-1 focus:ring-primary-500 bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-gray-500 mb-1 italic">Fecha</label>
+                      <input 
+                        type="number"
+                        value={parseInt(data.styles?.coverDate?.fontSize || '0') || ''}
+                        onChange={(e) => handleFontSizeChange('coverDate', e.target.value ? `${e.target.value}px` : '')}
+                        placeholder="Ej. 18"
+                        className="w-full px-2 py-1 text-xs border rounded outline-none focus:ring-1 focus:ring-primary-500 bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-gray-500 mb-1 italic">Contador</label>
+                      <input 
+                        type="number"
+                        value={parseInt(data.styles?.coverCountdownNumber?.fontSize || '0') || ''}
+                        onChange={(e) => handleFontSizeChange('coverCountdownNumber', e.target.value ? `${e.target.value}px` : '')}
+                        placeholder="Ej. 36"
+                        className="w-full px-2 py-1 text-xs border rounded outline-none focus:ring-1 focus:ring-primary-500 bg-white"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Fecha y Hora del Evento</label>
@@ -989,6 +1059,7 @@ export default function Editor() {
                 { id: 'neon_party', name: 'Fiesta Neón', color: 'bg-fuchsia-950' },
                 { id: 'invierno_magico', name: 'Invierno Mágico', color: 'bg-slate-900' },
                 { id: 'atardecer_tropical', name: 'Atardecer Tropical', color: 'bg-orange-900' },
+                { id: 'boda_premium', name: 'Boda Premium', color: 'bg-stone-50' },
                 { id: 'boda_clasica', name: 'Boda Clásica', color: 'bg-slate-50' },
                 { id: 'boda_rustica', name: 'Boda Rústica', color: 'bg-stone-100' },
                 { id: 'cumpleanos_infantil', name: 'Cumpleaños Infantil', color: 'bg-sky-100' },
@@ -1112,6 +1183,50 @@ export default function Editor() {
                     </button>
                   </div>
                   <p className="text-xs text-gray-500">Estos colores aparecerán en la sección de código de vestimenta.</p>
+                </div>
+              </div>
+
+              <div className="pt-6 border-t border-gray-200">
+                <h3 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wider text-red-600">Colores que no se pueden llevar</h3>
+                <div className="space-y-4">
+                  <div className="flex flex-wrap gap-3">
+                    {data.dressCode?.forbiddenColors?.map((color, index) => (
+                      <div key={index} className="flex flex-col items-center gap-1">
+                        <div className="relative group">
+                          <input
+                            type="color"
+                            value={color}
+                            onChange={(e) => {
+                              const newColors = [...(data.dressCode?.forbiddenColors || [])];
+                              newColors[index] = e.target.value;
+                              handleChange('dressCode', 'forbiddenColors', newColors);
+                            }}
+                            className="w-10 h-10 rounded-full cursor-pointer border-2 border-white shadow-sm"
+                          />
+                          <button
+                            onClick={() => {
+                              const newColors = [...(data.dressCode?.forbiddenColors || [])];
+                              newColors.splice(index, 1);
+                              handleChange('dressCode', 'forbiddenColors', newColors);
+                            }}
+                            className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                    <button
+                      onClick={() => {
+                        const newColors = [...(data.dressCode?.forbiddenColors || []), '#ffffff'];
+                        handleChange('dressCode', 'forbiddenColors', newColors);
+                      }}
+                      className="w-10 h-10 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 hover:border-red-500 hover:text-red-500 transition-colors"
+                    >
+                      <Plus className="w-5 h-5" />
+                    </button>
+                  </div>
+                  <p className="text-xs text-gray-500">Estos colores aparecerán tachados como no permitidos.</p>
                 </div>
               </div>
             </div>
@@ -1418,9 +1533,45 @@ export default function Editor() {
                     />
                   </div>
                 </div>
+
+                <div className="pt-2 space-y-3">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Tamaños de letra (puntos)</p>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-[10px] text-gray-500 mb-1 italic">Nombre</label>
+                      <input 
+                        type="number"
+                        value={parseInt(data.styles?.ceremonyName?.fontSize || '0') || ''}
+                        onChange={(e) => handleFontSizeChange('ceremonyName', e.target.value ? `${e.target.value}px` : '')}
+                        placeholder="Ej. 24"
+                        className="w-full px-2 py-1 text-xs border rounded outline-none focus:ring-1 focus:ring-primary-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-gray-500 mb-1 italic">Dirección</label>
+                      <input 
+                        type="number"
+                        value={parseInt(data.styles?.ceremonyAddress?.fontSize || '0') || ''}
+                        onChange={(e) => handleFontSizeChange('ceremonyAddress', e.target.value ? `${e.target.value}px` : '')}
+                        placeholder="Ej. 16"
+                        className="w-full px-2 py-1 text-xs border rounded outline-none focus:ring-1 focus:ring-primary-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-gray-500 mb-1 italic">Hora</label>
+                      <input 
+                        type="number"
+                        value={parseInt(data.styles?.ceremonyTime?.fontSize || '0') || ''}
+                        onChange={(e) => handleFontSizeChange('ceremonyTime', e.target.value ? `${e.target.value}px` : '')}
+                        placeholder="Ej. 20"
+                        className="w-full px-2 py-1 text-xs border rounded outline-none focus:ring-1 focus:ring-primary-500"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-4 pt-4 border-t border-gray-100">
                 <h3 className="text-lg font-bold text-gray-900 border-b pb-2">Recepción</h3>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Lugar</label>
@@ -1460,40 +1611,126 @@ export default function Editor() {
                     />
                   </div>
                 </div>
+
+                <div className="pt-2 space-y-3">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Tamaños de letra (puntos)</p>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-[10px] text-gray-500 mb-1 italic">Nombre</label>
+                      <input 
+                        type="number"
+                        value={parseInt(data.styles?.receptionName?.fontSize || '0') || ''}
+                        onChange={(e) => handleFontSizeChange('receptionName', e.target.value ? `${e.target.value}px` : '')}
+                        placeholder="Ej. 24"
+                        className="w-full px-2 py-1 text-xs border rounded outline-none focus:ring-1 focus:ring-primary-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-gray-500 mb-1 italic">Dirección</label>
+                      <input 
+                        type="number"
+                        value={parseInt(data.styles?.receptionAddress?.fontSize || '0') || ''}
+                        onChange={(e) => handleFontSizeChange('receptionAddress', e.target.value ? `${e.target.value}px` : '')}
+                        placeholder="Ej. 16"
+                        className="w-full px-2 py-1 text-xs border rounded outline-none focus:ring-1 focus:ring-primary-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-gray-500 mb-1 italic">Hora</label>
+                      <input 
+                        type="number"
+                        value={parseInt(data.styles?.receptionTime?.fontSize || '0') || ''}
+                        onChange={(e) => handleFontSizeChange('receptionTime', e.target.value ? `${e.target.value}px` : '')}
+                        placeholder="Ej. 20"
+                        className="w-full px-2 py-1 text-xs border rounded outline-none focus:ring-1 focus:ring-primary-500"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
           {activeTab === 'itinerary' && (
-            <div className="space-y-4">
-              {data.itinerary.map((item, index) => (
-                <div key={index} className="flex gap-4 items-start p-4 bg-gray-50 rounded-xl border border-gray-200">
-                  <div className="w-1/3">
-                    <label className="block text-xs font-medium text-gray-500 mb-1 uppercase">Hora</label>
-                    <input
-                      type="text"
-                      value={item.time}
-                      placeholder="Ej. 18:00 hrs"
-                      onChange={(e) => handleItineraryChange(index, 'time', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm"
+            <div className="space-y-6">
+              <div className="bg-amber-50 p-3 rounded-xl border border-amber-100 mb-2">
+                <p className="text-[11px] font-bold text-amber-900 uppercase tracking-widest mb-2">Tamaños globales del itinerario</p>
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-[10px] text-amber-700 mb-1 italic">Título</label>
+                    <input 
+                      type="number"
+                      value={parseInt(data.styles?.itineraryTitle?.fontSize || '0') || ''}
+                      onChange={(e) => handleFontSizeChange('itineraryTitle', e.target.value ? `${e.target.value}px` : '')}
+                      placeholder="Ej. 40"
+                      className="w-full px-2 py-1 text-xs border border-amber-200 rounded outline-none focus:ring-1 focus:ring-amber-500 bg-white"
                     />
                   </div>
-                  <div className="w-2/3">
-                    <label className="block text-xs font-medium text-gray-500 mb-1 uppercase">Evento</label>
-                    <input
-                      type="text"
-                      value={item.event}
-                      onChange={(e) => handleItineraryChange(index, 'event', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm"
+                  <div>
+                    <label className="block text-[10px] text-amber-700 mb-1 italic">Horas</label>
+                    <input 
+                      type="number"
+                      value={parseInt(data.styles?.itineraryTime?.fontSize || '0') || ''}
+                      onChange={(e) => handleFontSizeChange('itineraryTime', e.target.value ? `${e.target.value}px` : '')}
+                      placeholder="Ej. 18"
+                      className="w-full px-2 py-1 text-xs border border-amber-200 rounded outline-none focus:ring-1 focus:ring-amber-500 bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] text-amber-700 mb-1 italic">Eventos</label>
+                    <input 
+                      type="number"
+                      value={parseInt(data.styles?.itineraryEvent?.fontSize || '0') || ''}
+                      onChange={(e) => handleFontSizeChange('itineraryEvent', e.target.value ? `${e.target.value}px` : '')}
+                      placeholder="Ej. 24"
+                      className="w-full px-2 py-1 text-xs border border-amber-200 rounded outline-none focus:ring-1 focus:ring-amber-500 bg-white"
                     />
                   </div>
                 </div>
-              ))}
+              </div>
+              
+              <div className="space-y-4">
+                {data.itinerary.map((item, index) => (
+                  <div key={index} className="flex gap-4 items-start p-4 bg-gray-50 rounded-xl border border-gray-200 relative group">
+                    <button
+                      onClick={() => {
+                        const newItinerary = [...data.itinerary];
+                        newItinerary.splice(index, 1);
+                        handleChange(null, 'itinerary', newItinerary);
+                      }}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                    <div className="w-1/3">
+                      <label className="block text-xs font-medium text-gray-500 mb-1 uppercase">Hora</label>
+                      <input
+                        type="text"
+                        value={item.time}
+                        placeholder="Ej. 18:00 hrs"
+                        onChange={(e) => handleItineraryChange(index, 'time', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm"
+                      />
+                    </div>
+                    <div className="w-2/3">
+                      <label className="block text-xs font-medium text-gray-500 mb-1 uppercase">Evento</label>
+                      <input
+                        type="text"
+                        value={item.event}
+                        onChange={(e) => handleItineraryChange(index, 'event', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
               <button
                 onClick={() => handleChange(null, 'itinerary', [...data.itinerary, { time: '', event: 'Nuevo Evento' }])}
-                className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-600 font-medium hover:border-primary-500 hover:text-primary-600 transition-colors"
+                className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-600 font-medium hover:border-primary-500 hover:text-primary-600 transition-colors flex items-center justify-center gap-2"
               >
-                + Añadir Evento
+                <Plus className="w-5 h-5" />
+                Añadir Evento
               </button>
             </div>
           )}
@@ -1865,96 +2102,102 @@ export default function Editor() {
                   backgroundImage: `linear-gradient(to bottom, color-mix(in srgb, ${qrColor} 10%, white) 0%, ${qrColor} 30%, color-mix(in srgb, ${qrColor} 40%, black) 100%)`
                 }}
               >
-                <div className="absolute inset-0 pt-10 pb-8 px-6 sm:px-8 flex flex-col items-center justify-between h-full">
+                <div className="absolute inset-0 pt-8 pb-6 px-8 sm:px-10 flex flex-col items-center justify-between h-full bg-[#fdfbf7]">
+                  {/* Decorative Elements */}
+                  <div className="absolute top-3 left-3 right-3 bottom-3 border border-[#af9462]/30 pointer-events-none" />
+                  <div className="absolute top-5 left-5 right-5 bottom-5 border-2 border-[#af9462]/10 pointer-events-none" />
+                  
                   {/* Header */}
-                  <div className="flex flex-col items-center w-full">
-                    <p className="text-[11px] font-sans font-bold uppercase tracking-[0.35em] text-white opacity-95 mb-3 drop-shadow-sm">
-                      {data.title || 'MIS XV AÑOS'}
+                  <div className="flex flex-col items-center w-full z-10">
+                    <p className="text-[10px] font-serif uppercase tracking-[0.4em] text-[#af9462] mb-2 drop-shadow-sm" style={{ fontFamily: 'Cinzel, serif' }}>
+                      {data.title || 'NUESTRA BODA'}
                     </p>
-                    <p className="text-[34px] sm:text-[36px] font-sans font-medium uppercase tracking-[0.25em] text-white mb-5 drop-shadow-md leading-none text-center flex-shrink-0">
-                      {data.name || 'N I C O L E'}
+                    <p className="text-[32px] sm:text-[36px] text-[#2c2c2b] mb-2 leading-none text-center flex-shrink-0" style={{ fontFamily: 'Parisienne, cursive' }}>
+                      {data.name || 'Ana & Carlos'}
                     </p>
-                    <div className="w-[85%] h-[1px] bg-white opacity-90 shadow-sm" />
+                    <div className="flex justify-center items-center gap-3 mb-4 opacity-40">
+                      <span className="w-8 h-px bg-[#af9462]"></span>
+                      <span className="w-1 h-1 rotate-45 border border-[#af9462] bg-[#fdfbf7]"></span>
+                      <span className="w-8 h-px bg-[#af9462]"></span>
+                    </div>
                   </div>
 
                   {/* Main Action and QR */}
-                  <div className="flex flex-col items-center z-10 relative flex-1 justify-center w-full mt-2">
+                  <div className="flex flex-col items-center z-10 relative flex-1 justify-center w-full">
                     
                     {qrGuestId && data.guests?.find(g => g.id === qrGuestId)?.name ? (
-                      <div className="mb-6 flex flex-col items-center">
-                        <p className="text-[10px] font-sans font-bold uppercase tracking-[0.3em] text-white/80 mb-2 drop-shadow-sm">
+                      <div className="mb-4 flex flex-col items-center">
+                        <p className="text-[9px] font-serif uppercase tracking-[0.3em] text-[#af9462]/80 mb-1 drop-shadow-sm" style={{ fontFamily: 'Cinzel, serif' }}>
                           RESERVADO PARA
                         </p>
                         <p 
-                           className="text-[20px] sm:text-[22px] text-white text-center italic drop-shadow-md break-words max-w-[320px]"
-                           style={{ fontFamily: '"Playfair Display", Georgia, serif', lineHeight: 1.2 }}
+                           className="text-[18px] sm:text-[20px] text-[#2c2c2b] text-center italic break-words max-w-[300px]"
+                           style={{ fontFamily: 'Lora, serif', lineHeight: 1.2 }}
                         >
                           {data.guests.find(g => g.id === qrGuestId)?.name}
                         </p>
                       </div>
                     ) : (
-                      <div className="mb-4" />
+                      <div className="mb-2" />
                     )}
 
                     <h2 
-                      className="text-[36px] sm:text-[40px] text-white text-center font-bold leading-[1.05] drop-shadow-md mb-6"
-                      style={{ fontFamily: '"Playfair Display", Georgia, serif', letterSpacing: '-0.02em', textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}
+                      className="text-[24px] sm:text-[28px] text-[#2c2c2b] text-center font-light leading-[1.2] mb-6"
+                      style={{ fontFamily: 'Playfair Display, serif', letterSpacing: '0.02em' }}
                     >
-                      Scanea para ver<br/>la invitación
+                      Te invitamos a<br/><span className="text-[14px] uppercase tracking-[0.2em] font-serif opacity-70" style={{ fontFamily: 'Cinzel, serif' }}>Escanear para ver</span><br/><span style={{ fontFamily: 'Parisienne, cursive' }} className="text-3xl text-[#af9462]">La Invitación</span>
                     </h2>
 
                     <div className="relative isolate">
-                      {/* Hard diagonal shadow */}
+                      {/* Elegant drop shadow */}
                       <div 
-                        className="absolute inset-0 z-[-1]" 
-                        style={{
-                          boxShadow: Array.from({length: 250}).map((_, i) => `${i}px ${i}px 0 color-mix(in srgb, ${qrColor} 55%, black)`).join(',')
-                        }}
+                        className="absolute -inset-2 z-[-1] border border-[#af9462]/20 rounded-sm" 
                       />
-                      <div className="bg-white p-[6px]">
+                      <div className="bg-white p-2 shadow-lg border border-[#af9462]/10">
                         <QRCodeSVG 
                           value={`${getPublicUrl()}?guest=${qrGuestId}`} 
-                          size={150}
+                          size={140}
                           level="Q"
                           includeMargin={false}
+                          fgColor="#2c2c2b"
                         />
                       </div>
                     </div>
                   </div>
 
                   {/* Footer Info */}
-                  <div className="w-full z-10 relative pt-6 flex flex-col items-center justify-end text-white">
-                    <div className="w-[85%] h-[1px] bg-white opacity-90 mb-4 shadow-sm" />
+                  <div className="w-full z-10 relative pt-2 flex flex-col items-center justify-end text-[#2c2c2b]">
+                    <div className="w-[50%] h-px bg-[#af9462]/30 mb-3" />
                     
-                    <p className="text-[11px] font-sans font-bold uppercase tracking-[0.25em] drop-shadow-sm opacity-95 text-center mb-3">
-                      CONFIRMAR ANTES DEL {(() => {
-                        try {
-                          if (!data.date) return '15 DE MAYO';
-                          const [year, month, day] = data.date.split('-');
-                          const d = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-                          return format(subDays(d, 15), "d 'DE' MMMM", { locale: es }).toUpperCase();
-                        } catch { return '15 DE MAYO'; }
-                      })()}
+                    <p className="text-[9px] font-serif font-bold uppercase tracking-[0.2em] text-[#af9462] text-center mb-1.5" style={{ fontFamily: 'Cinzel, serif' }}>
+                      CONFIRMAR ANTES DEL 1 DE SEPTIEMBRE
                     </p>
                       
                     <div className="flex flex-col items-center w-full">
-                      {data.guests?.find(g => g.id === qrGuestId)?.tableNumber ? (
-                        <p className="text-[13px] font-sans font-bold tracking-[0.2em] opacity-95 mb-3 text-center uppercase drop-shadow-sm">
-                          - MESA {data.guests.find(g => g.id === qrGuestId)?.tableNumber} -
-                        </p>
-                      ) : (
-                         <div className="mb-3" />
-                      )}
-                      
-                      <div className="flex gap-4 items-center justify-center">
-                         {data.guests?.find(g => g.id === qrGuestId)?.tickets !== undefined && (
-                          <p className="text-[12px] font-sans font-bold tracking-[0.15em] opacity-95 px-3 py-1 bg-black/20 border border-white/40 whitespace-nowrap drop-shadow-sm backdrop-blur-sm">
-                            {data.guests?.find(g => g.id === qrGuestId)?.tickets === 0 
-                              ? 'ENTRADA LIBRE' 
-                              : `${data.guests?.find(g => g.id === qrGuestId)?.tickets || 1} PASE${(data.guests?.find(g => g.id === qrGuestId)?.tickets || 1) !== 1 ? 'S' : ''}`}
-                          </p>
-                         )}
-                      </div>
+                      {(() => {
+                        const guest = data.guests?.find(g => g.id === qrGuestId);
+                        if (!guest) return null;
+                        
+                        return (
+                          <>
+                            {(guest.tableNumber !== undefined && guest.tableNumber !== null && guest.tableNumber !== '') && (
+                              <p className="text-[13px] font-serif font-bold tracking-[0.2em] text-[#2c2c2b] mb-2 text-center uppercase" style={{ fontFamily: 'Cinzel, serif' }}>
+                                - MESA {guest.tableNumber} -
+                              </p>
+                            )}
+                            
+                            <div className="flex gap-4 items-center justify-center">
+                               {guest.tickets !== undefined && (
+                                <p className="text-[12px] font-serif font-bold tracking-[0.1em] text-[#2c2c2b] px-4 py-1.5 border border-[#af9462]/40 whitespace-nowrap bg-white/60 shadow-sm" style={{ fontFamily: 'Cinzel, serif' }}>
+                                  {guest.tickets === 0 
+                                    ? 'ENTRADA LIBRE' 
+                                    : `${guest.tickets || 1} PASE${(guest.tickets || 1) !== 1 ? 'S' : ''}`}
+                                </p>
+                               )}
+                            </div>
+                          </>
+                        );
+                      })()}
                     </div>
                   </div>
                 </div>

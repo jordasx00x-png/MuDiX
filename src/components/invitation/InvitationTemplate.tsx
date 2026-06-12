@@ -303,6 +303,20 @@ export const themes = {
     image: 'https://images.unsplash.com/photo-1595086861596-3c0762497d3e?auto=format&fit=crop&q=80&width=1080',
     characterImage: 'https://upload.wikimedia.org/wikipedia/en/e/e0/Bluey_character_from_Bluey.png',
   },
+  boda_premium: {
+    bg: 'bg-[#FDFBF7]',
+    text: 'text-[#2C2C2B]',
+    accent: 'text-[#AF9462]',
+    accentBg: 'bg-[#AF9462]/10',
+    border: 'border-[#AF9462]/20',
+    font: 'font-serif',
+    titleFont: 'Cinzel',
+    nameFont: 'Parisienne',
+    bodyFont: 'Lora',
+    image: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1080&auto=format&fit=crop',
+    primaryColor: '#FDFBF7',
+    accentColor: '#AF9462'
+  },
   frozen: {
     bg: 'bg-blue-300',
     text: 'text-blue-50',
@@ -390,7 +404,7 @@ function useMounted() {
 export function FloatingParticles({ theme }: { theme?: string }) {
   const mounted = useMounted();
   const isXV = theme === 'princesa' || theme === 'elegancia' || theme === 'dorado' || theme === 'floral' || theme === 'rose_gold' || theme === 'noche_magica' || theme === 'esmeralda_plata';
-  const isWedding = theme === 'boda_clasica' || theme === 'boda_rustica';
+  const isWedding = theme === 'boda_clasica' || theme === 'boda_rustica' || theme === 'boda_premium';
   const isKids = KIDS_THEMES.includes(theme || '');
   const isFloral = theme === 'floral';
   const isForest = theme === 'bosque';
@@ -859,7 +873,7 @@ export function WobblyText({ text, className, style, showStroke = true }: { text
   );
 }
 
-export function Countdown({ targetDate }: { targetDate: string }) {
+export function Countdown({ targetDate, styles }: { targetDate: string, styles?: any }) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
@@ -918,12 +932,18 @@ export function Countdown({ targetDate }: { targetDate: string }) {
                 exit={{ y: -20, opacity: 0 }}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
                 className="text-3xl md:text-4xl font-light mb-1"
+                style={{ fontSize: styles?.coverCountdownNumber?.fontSize }}
               >
                 {String(item.value).padStart(2, '0')}
               </motion.div>
             </AnimatePresence>
           </div>
-          <div className="text-[10px] md:text-xs uppercase tracking-widest opacity-60 mt-1">{item.label}</div>
+          <div 
+            className="text-[10px] md:text-xs uppercase tracking-widest opacity-60 mt-1"
+            style={{ fontSize: styles?.coverCountdownLabel?.fontSize }}
+          >
+            {item.label}
+          </div>
         </motion.div>
       ))}
     </div>
@@ -1203,7 +1223,7 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
   const theme = getTheme(data);
   const eventDate = data.date ? new Date(data.date) : new Date();
   const isValidDate = !isNaN(eventDate.getTime());
-  const isWedding = data.theme === 'boda_clasica' || data.theme === 'boda_rustica';
+  const isWedding = data.theme === 'boda_clasica' || data.theme === 'boda_rustica' || data.theme === 'boda_premium';
   const isKidsBirthday = KIDS_THEMES.includes(data.theme);
   const isXV = data.title?.toLowerCase().includes('xv') || data.theme === 'princesa' || data.theme === 'elegancia' || data.theme === 'rose_gold' || data.theme === 'noche_magica' || data.theme === 'esmeralda_plata';
 
@@ -1301,7 +1321,7 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
       </div>
 
       {/* Wedding Hero Section */}
-      {isWedding && data.coverImage && (
+      {isWedding && data.coverImage && (!data.coverFrame || data.coverFrame === 'none' || data.coverFrame === 'arch') && (
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -1407,13 +1427,12 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
               transition={{ delay: 1.2, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
               className="flex flex-col items-center gap-5 mt-6 w-full max-w-sm mx-auto"
             >
-              <p className="text-xs md:text-sm uppercase tracking-[0.4em] text-white/80 font-light drop-shadow-md">
-                Nuestra Boda
-              </p>
-              
               <div className="flex items-center justify-center w-full gap-4">
                 <div className="h-[1px] flex-grow bg-gradient-to-r from-transparent to-white/40"></div>
-                <p className={cn("font-serif text-white/95 drop-shadow-md px-2", dateSizeClass[data.dateSize || 'mediano'], data.dateUppercase && "uppercase")}>
+                <p 
+                  className={cn("font-serif text-white/95 drop-shadow-md px-2", dateSizeClass[data.dateSize || 'mediano'], data.dateUppercase && "uppercase")}
+                  style={{ fontSize: data.styles?.coverDate?.fontSize }}
+                >
                   {isValidDate ? format(eventDate, "EEEE d 'de' MMMM, yyyy", { locale: es }) : 'Fecha por confirmar'}
                 </p>
                 <div className="h-[1px] flex-grow bg-gradient-to-l from-transparent to-white/40"></div>
@@ -1427,7 +1446,7 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
               className="pt-6 w-full flex justify-center"
             >
               <div className="bg-black/20 backdrop-blur-sm px-6 mx-4 rounded-xl border border-white/10 shadow-xl py-4 text-white">
-                 <Countdown targetDate={data.date} />
+                 <Countdown targetDate={data.date} styles={data.styles} />
               </div>
             </motion.div>
 
@@ -1445,7 +1464,7 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
       <div className="relative z-10 container mx-auto px-4 py-12 max-w-2xl">
         {data.musicUrl && <MusicPlayer url={data.musicUrl} theme={theme} />}
         {/* Header */}
-        {(!isWedding || !data.coverImage) && (
+        {(!isWedding || !data.coverImage || (data.coverFrame && data.coverFrame !== 'none' && data.coverFrame !== 'arch')) && (
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -1756,7 +1775,7 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
               multiline
               className={cn(isWedding ? "opacity-70 mb-8 text-sm md:text-base max-w-sm mx-auto font-light leading-relaxed" : "opacity-80 mb-6 text-sm max-w-xs mx-auto")}
             />
-            <div className={cn("flex items-center justify-center gap-4 mb-10", isWedding ? "opacity-90 text-xl font-serif tracking-widest" : "opacity-90 text-lg", data.dateUppercase && "uppercase")}>
+            <div className={cn("flex items-center justify-center gap-4 mb-10", isWedding ? "opacity-90 text-xl font-serif tracking-widest" : "opacity-90 text-lg", data.dateUppercase && "uppercase")} style={{ fontSize: data.styles?.ceremonyTime?.fontSize }}>
               {isWedding && <span className="w-8 h-px bg-current opacity-30"></span>}
               <span>{data.ceremony?.time}</span>
               {isWedding && <span className="w-8 h-px bg-current opacity-30"></span>}
@@ -1809,7 +1828,7 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
               multiline
               className={cn(isWedding ? "opacity-70 mb-8 text-sm md:text-base max-w-sm mx-auto font-light leading-relaxed" : "opacity-80 mb-6 text-sm max-w-xs mx-auto")}
             />
-            <div className={cn("flex items-center justify-center gap-4 mb-10", isWedding ? "opacity-90 text-xl font-serif tracking-widest" : "opacity-90 text-lg", data.dateUppercase && "uppercase")}>
+            <div className={cn("flex items-center justify-center gap-4 mb-10", isWedding ? "opacity-90 text-xl font-serif tracking-widest" : "opacity-90 text-lg", data.dateUppercase && "uppercase")} style={{ fontSize: data.styles?.receptionTime?.fontSize }}>
               {isWedding && <span className="w-8 h-px bg-current opacity-30"></span>}
               <span>{data.reception?.time}</span>
               {isWedding && <span className="w-8 h-px bg-current opacity-30"></span>}
@@ -1852,7 +1871,7 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
             <RevealText 
               text="Itinerario"
               className={cn(isWedding ? "text-4xl md:text-5xl font-serif font-light tracking-widest" : "text-3xl md:text-4xl font-bold", !theme.accentColor && theme.accent)}
-              style={theme.accentColor ? { color: theme.accentColor } : {}}
+              style={{ fontSize: data.styles?.itineraryTitle?.fontSize, color: theme.accentColor ? theme.accentColor : undefined }}
             />
             {!isWedding && <div className="h-1 w-12 bg-white/20 rounded-full mt-4" />}
           </div>
@@ -1895,12 +1914,19 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
                         : "text-sm font-mono font-bold tracking-[0.2em] uppercase mb-3 px-4 py-1 rounded-full border border-white/10 bg-white/5",
                       !theme.accentColor && theme.accent
                     )}
-                    style={theme.accentColor && !isWedding ? { color: theme.accentColor, borderColor: `${theme.accentColor}33` } : (isWedding && theme.accentColor ? { color: theme.accentColor } : {})}
+                    style={{ 
+                      fontSize: data.styles?.itineraryTime?.fontSize,
+                      color: theme.accentColor && !isWedding ? theme.accentColor : (isWedding && theme.accentColor ? theme.accentColor : undefined),
+                      borderColor: theme.accentColor && !isWedding ? `${theme.accentColor}33` : undefined
+                    }}
                   >
                     {item.time}
                   </div>
                   
-                  <h5 className={cn(isWedding ? "text-2xl md:text-3xl font-serif font-medium opacity-90 group-hover:tracking-wide transition-all duration-500" : "text-xl md:text-2xl font-serif font-medium leading-tight")}>
+                  <h5 
+                    className={cn(isWedding ? "text-2xl md:text-3xl font-serif font-medium opacity-90 group-hover:tracking-wide transition-all duration-500" : "text-xl md:text-2xl font-serif font-medium leading-tight")}
+                    style={{ fontSize: data.styles?.itineraryEvent?.fontSize }}
+                  >
                     {item.event}
                   </h5>
                   
@@ -2109,18 +2135,10 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
                 <ElegantBorder className="w-full max-w-lg" glowColor={theme.accentColor || 'rgba(255,255,255,0.3)'}>
                   <div className="px-8 py-10 sm:py-14 text-center">
                     <p className="text-lg opacity-80 mb-4 font-light">Por favor confirma tu asistencia</p>
-                    {data.date && (
-                       <p className={cn("text-sm font-serif italic mb-10 opacity-70")}
-                          style={theme.accentColor ? { color: theme.accentColor } : {}}>
-                         antes del {(() => {
-                            try {
-                              const [year, month, day] = data.date.split('-');
-                              const d = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-                              return format(subDays(d, 15), "d 'de' MMMM", { locale: es });
-                            } catch { return '...'; }
-                          })()}
-                       </p>
-                    )}
+                    <p className={cn("text-sm font-serif italic mb-10 opacity-70")}
+                       style={theme.accentColor ? { color: theme.accentColor } : {}}>
+                      antes del 1 de septiembre
+                    </p>
                     <div className="flex justify-center">
                       <div className="scale-100 sm:scale-110 w-full sm:w-auto">
                         <InteractiveRSVP data={data} theme={theme} />
@@ -2142,18 +2160,10 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
                 className={cn("text-4xl mb-4", !theme.accentColor && theme.accent)}
               />
               <p className="opacity-80 mb-2">Por favor confirma tu asistencia.</p>
-              {data.date && (
-                <p className={cn("text-sm font-bold uppercase tracking-widest mb-8", !theme.accentColor && theme.accent)}
-                   style={theme.accentColor ? { color: theme.accentColor } : {}}>
-                  Confirmar antes del {(() => {
-                    try {
-                      const [year, month, day] = data.date.split('-');
-                      const d = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-                      return format(subDays(d, 15), "d 'de' MMMM", { locale: es });
-                    } catch { return '...'; }
-                  })()}
-                </p>
-              )}
+              <p className={cn("text-sm font-bold uppercase tracking-widest mb-8", !theme.accentColor && theme.accent)}
+                 style={theme.accentColor ? { color: theme.accentColor } : {}}>
+                Confirmar antes del 1 de septiembre
+              </p>
               <InteractiveRSVP data={data} theme={theme} />
             </>
           )}

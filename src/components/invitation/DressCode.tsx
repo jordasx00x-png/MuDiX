@@ -61,7 +61,7 @@ export default function DressCode({ data, theme, isWedding }: DressCodeProps) {
       <p className={cn("mb-8 uppercase tracking-[0.2em]", isWedding ? "text-xl md:text-2xl font-serif font-medium" : "text-xl font-bold tracking-widest")}>{data.dressCode.style}</p>
       
       {data.dressCode.colors && data.dressCode.colors.length > 0 && (
-        <div className={isWedding ? "pb-4" : ""}>
+        <div className={isWedding ? "pb-4 mb-8" : "mb-8"}>
           <p className={cn("opacity-70 text-sm", isWedding ? "mb-6 tracking-widest uppercase text-xs" : "mb-4")}>{isWedding ? "Paleta de Colores" : "Paleta de colores sugerida:"}</p>
           <div className="flex justify-center gap-4 flex-wrap">
             {data.dressCode.colors.map((color, index) => (
@@ -75,6 +75,34 @@ export default function DressCode({ data, theme, isWedding }: DressCodeProps) {
                 className="w-10 h-10 rounded-full shadow-lg border-2 border-white/20 relative group cursor-pointer"
                 style={{ backgroundColor: color }}
               >
+                {/* Tooltip on hover */}
+                <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                  {color}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {data.dressCode.forbiddenColors && data.dressCode.forbiddenColors.length > 0 && (
+        <div className={isWedding ? "pb-4" : ""}>
+          <p className={cn("opacity-70 text-sm italic", isWedding ? "mb-6 tracking-widest uppercase text-xs text-red-500/80" : "mb-4 text-red-500/80")}>Colores que no se pueden llevar:</p>
+          <div className="flex justify-center gap-4 flex-wrap">
+            {data.dressCode.forbiddenColors.map((color, index) => (
+              <motion.div
+                key={index}
+                initial={{ scale: 0, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1, type: "spring", bounce: 0.5 }}
+                whileHover={{ scale: 1.2, rotate: -10 }}
+                className="w-10 h-10 rounded-full shadow-lg border-2 border-red-500/30 relative group cursor-pointer flex items-center justify-center"
+                style={{ backgroundColor: color }}
+              >
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-full h-0.5 bg-red-500/50 rotate-45 transform"></div>
+                </div>
                 {/* Tooltip on hover */}
                 <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                   {color}
