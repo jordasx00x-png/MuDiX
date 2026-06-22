@@ -105,9 +105,36 @@
         "ownerId": { "type": "string", "description": "UID of the invitation owner" },
         "isPublic": { "type": "boolean", "description": "Whether the invitation is publicly accessible" },
         "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" },
-        "updatedAt": { "type": "string", "format": "date-time", "description": "Last update timestamp" }
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last update timestamp" },
+        "rsvp": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "deadline": { "type": "string" },
+            "showGuestCount": { "type": "boolean" },
+            "allowPlusOne": { "type": "boolean" },
+            "collectPhone": { "type": "boolean" },
+            "message": { "type": "string" }
+          }
+        }
       },
-      "required": ["id", "title", "templateId", "ownerId", "isPublic", "createdAt", "updatedAt"]
+      "required": ["id", "title", "ownerId", "isPublic", "createdAt", "updatedAt"]
+    },
+    "RSVPResponse": {
+      "title": "RSVP Response",
+      "description": "RSVP confirmation from a guest",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "invitationId": { "type": "string" },
+        "guestName": { "type": "string" },
+        "attending": { "type": "boolean" },
+        "guestCount": { "type": "number" },
+        "phone": { "type": "string" },
+        "message": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "invitationId", "guestName", "attending", "guestCount", "createdAt"]
     }
   },
   "firestore": {
@@ -118,6 +145,10 @@
     "/invitations/{invitationId}": {
       "schema": "Invitation",
       "description": "Invitations collection"
+    },
+    "/invitations/{invitationId}/rsvps/{rsvpId}": {
+      "schema": "RSVPResponse",
+      "description": "RSVP responses for a specific invitation"
     }
   }
 }

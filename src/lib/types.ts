@@ -13,10 +13,21 @@ export interface SectionStyle {
   textAlign?: 'left' | 'center' | 'right';
 }
 
+export interface RSVPResponse {
+  id: string;
+  invitationId: string;
+  guestName: string;
+  attending: boolean;
+  guestCount: number;
+  phone?: string;
+  message?: string;
+  createdAt: string;
+}
+
 export interface InvitationData {
   id: string;
   layoutMode?: 'traditional' | 'stories' | 'interactive_card';
-  theme: 'bosque' | 'bridgerton' | 'princesa' | 'elegancia' | 'floral' | 'estrellas' | 'dorado' | 'rose_gold' | 'noche_magica' | 'esmeralda_plata' | 'minimalista' | 'rojo_pasion' | 'vino_tinto' | 'carmesi' | 'mariposa_azul' | 'vintage_sepia' | 'neon_party' | 'invierno_magico' | 'atardecer_tropical' | 'boda_clasica' | 'boda_rustica' | 'cumpleanos_infantil' | 'baby_shower' | 'graduacion' | 'bautizo' | 'aniversario' | 'superheroe' | 'dinosaurio' | 'unicornio' | 'espacio' | 'bluey' | 'mario' | 'minecraft' | 'roblox' | 'sonic';
+  theme: 'bosque' | 'bridgerton' | 'princesa' | 'elegancia' | 'floral' | 'estrellas' | 'dorado' | 'rose_gold' | 'noche_magica' | 'esmeralda_plata' | 'minimalista' | 'rojo_pasion' | 'vino_tinto' | 'carmesi' | 'mariposa_azul' | 'vintage_sepia' | 'neon_party' | 'invierno_magico' | 'atardecer_tropical' | 'boda_clasica' | 'boda_rustica' | 'boda_premium' | 'cumpleanos_infantil' | 'baby_shower' | 'graduacion' | 'bautizo' | 'aniversario' | 'superheroe' | 'dinosaurio' | 'unicornio' | 'espacio' | 'bluey' | 'mario' | 'minecraft' | 'roblox' | 'sonic';
   title: string;
   titleSize?: 'pequeño' | 'mediano' | 'grande';
   guestName?: string;
@@ -71,6 +82,14 @@ export interface InvitationData {
   parentsNames?: {
     mother: string;
     father: string;
+  };
+  rsvp?: {
+    enabled: boolean;
+    deadline?: string;
+    showGuestCount?: boolean;
+    allowPlusOne?: boolean;
+    collectPhone?: boolean;
+    message?: string;
   };
   styles?: Record<string, SectionStyle>;
   ownerId?: string;
@@ -135,5 +154,10 @@ export const defaultInvitation: InvitationData = {
   parentsNames: {
     mother: '',
     father: '',
+  },
+  rsvp: {
+    enabled: false,
+    showGuestCount: true,
+    collectPhone: true,
   },
 };

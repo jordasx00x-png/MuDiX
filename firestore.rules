@@ -73,6 +73,18 @@ service cloud.firestore {
              data.role in ['admin', 'user'];
     }
 
+    function isValidRSVP(data) {
+      return hasRequiredFields(['id', 'invitationId', 'guestName', 'attending', 'guestCount', 'createdAt']) &&
+             data.id is string && data.id.size() < 100 &&
+             data.invitationId is string && data.invitationId.size() < 100 &&
+             data.guestName is string && data.guestName.size() > 0 && data.guestName.size() < 200 &&
+             data.attending is bool &&
+             data.guestCount is number && data.guestCount >= 0 && data.guestCount <= 50 &&
+             data.createdAt is string && data.createdAt.size() < 100 &&
+             (!('phone' in data) || (data.phone is string && data.phone.size() < 50)) &&
+             (!('message' in data) || (data.message is string && data.message.size() < 1000));
+    }
+
     function isValidInvitation(data) {
       return hasRequiredFields(['id', 'title', 'ownerId', 'isPublic', 'updatedAt']) &&
              data.id is string && data.id.size() > 0 && data.id.size() < 100 &&
@@ -97,6 +109,12 @@ service cloud.firestore {
       allow create: if isAuthenticated() && isValidInvitation(request.resource.data) && ('createdAt' in request.resource.data);
       allow update: if isAuthenticated() && (resource.data.ownerId == request.auth.uid || isAdmin()) && isValidInvitation(request.resource.data);
       allow delete: if isAuthenticated() && (resource.data.ownerId == request.auth.uid || isAdmin());
+
+      match /rsvps/{rsvpId} {
+        allow create: if isValidRSVP(request.resource.data) && 
+                        (get(/databases/$(database)/documents/invitations/$(invitationId)).data.rsvp.enabled == true);
+        allow read, update, delete: if isAuthenticated() && (get(/databases/$(database)/documents/invitations/$(invitationId)).data.ownerId == request.auth.uid || isAdmin());
+      }
     }
 
     match /{path=**} {

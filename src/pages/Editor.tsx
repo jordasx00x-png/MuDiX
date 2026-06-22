@@ -799,6 +799,7 @@ export default function Editor() {
             { id: 'locations', icon: <MapPin className="w-4 h-4" />, label: 'Ubicación' },
             { id: 'itinerary', icon: <List className="w-4 h-4" />, label: 'Itinerario' },
             { id: 'guests', icon: <Users className="w-4 h-4" />, label: 'Invitados' },
+            { id: 'rsvp', icon: <Check className="w-4 h-4" />, label: 'Confirmación' },
             { id: 'gifts', icon: <Gift className="w-4 h-4" />, label: 'Regalos' },
           ].map((tab) => (
             <button
@@ -1914,6 +1915,122 @@ export default function Editor() {
                   ))
                 )}
               </div>
+            </div>
+          )}
+
+          {activeTab === 'rsvp' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between p-4 bg-primary-50 rounded-xl border border-primary-100">
+                <div>
+                  <h3 className="font-bold text-primary-900">Sección de Confirmación (RSVP)</h3>
+                  <p className="text-sm text-primary-700">Permite que tus invitados confirmen su asistencia.</p>
+                </div>
+                <button
+                  onClick={() => handleChange('rsvp', 'enabled', !data.rsvp?.enabled)}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    data.rsvp?.enabled ? 'bg-primary-600' : 'bg-gray-200'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      data.rsvp?.enabled ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {data.rsvp?.enabled && (
+                <div className="space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Fecha Límite</label>
+                    <input
+                      type="date"
+                      value={data.rsvp.deadline || ''}
+                      onChange={(e) => handleChange('rsvp', 'deadline', e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+                    />
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                      <input
+                        type="checkbox"
+                        checked={data.rsvp.showGuestCount}
+                        onChange={(e) => handleChange('rsvp', 'showGuestCount', e.target.checked)}
+                        className="w-4 h-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                      />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-gray-900">Pedir número de acompañantes</p>
+                        <p className="text-xs text-gray-500">Los invitados podrán indicar cuántas personas asistirán.</p>
+                      </div>
+                    </label>
+
+                    <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                      <input
+                        type="checkbox"
+                        checked={data.rsvp.collectPhone}
+                        onChange={(e) => handleChange('rsvp', 'collectPhone', e.target.checked)}
+                        className="w-4 h-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                      />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-gray-900">Pedir teléfono de contacto</p>
+                        <p className="text-xs text-gray-500">Solicita un número de WhatsApp para contacto.</p>
+                      </div>
+                    </label>
+
+                    <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                      <input
+                        type="checkbox"
+                        checked={data.rsvp.allowPlusOne || false}
+                        onChange={(e) => handleChange('rsvp', 'allowPlusOne', e.target.checked)}
+                        className="w-4 h-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                      />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-gray-900">Permitir acompañante (Plus One)</p>
+                        <p className="text-xs text-gray-500">Acepta que los invitados lleven a alguien más.</p>
+                      </div>
+                    </label>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Mensaje personalizado</label>
+                    <textarea
+                      value={data.rsvp.message || ''}
+                      onChange={(e) => handleChange('rsvp', 'message', e.target.value)}
+                      placeholder="Ej. ¡Estamos emocionados de que nos acompañes!"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none h-24 resize-none transition-all"
+                    />
+                  </div>
+                  
+                  <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl flex gap-3">
+                    <Sparkles className="w-5 h-5 text-amber-600 shrink-0" />
+                    <div>
+                      <h4 className="text-sm font-bold text-amber-900 mb-0.5">Gestión de Respuestas</h4>
+                      <p className="text-xs text-amber-800 leading-relaxed">
+                        Las respuestas se guardarán de forma segura en Firestore. Podrás ver y descargar el listado completo de confirmados desde el panel.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {!data.rsvp?.enabled && (
+                <div className="flex flex-col items-center justify-center py-12 px-6 text-center bg-white rounded-2xl border-2 border-dashed border-gray-200">
+                  <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                    <Check className="w-8 h-8 text-gray-300" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">Confirmación Desactivada</h3>
+                  <p className="text-sm text-gray-500 max-w-xs mb-6">
+                    Activa esta sección para que tus invitados puedan confirmar su asistencia directamente desde la invitación digital.
+                  </p>
+                  <button
+                    onClick={() => handleChange('rsvp', 'enabled', true)}
+                    className="px-6 py-2 bg-primary-600 text-white rounded-full font-medium hover:bg-primary-700 transition-colors shadow-lg shadow-primary-200"
+                  >
+                    Activar RSVP
+                  </button>
+                </div>
+              )}
             </div>
           )}
 

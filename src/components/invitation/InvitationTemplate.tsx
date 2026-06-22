@@ -2107,6 +2107,7 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
       </ParallaxSection>
 
         {/* RSVP */}
+        {(data.rsvp?.enabled || data.rsvpPhone) && (
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -2135,10 +2136,18 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
                 <ElegantBorder className="w-full max-w-lg" glowColor={theme.accentColor || 'rgba(255,255,255,0.3)'}>
                   <div className="px-8 py-10 sm:py-14 text-center">
                     <p className="text-lg opacity-80 mb-4 font-light">Por favor confirma tu asistencia</p>
-                    <p className={cn("text-sm font-serif italic mb-10 opacity-70")}
-                       style={theme.accentColor ? { color: theme.accentColor } : {}}>
-                      antes del 1 de septiembre
-                    </p>
+                    {data.rsvp?.deadline && (
+                      <p className={cn("text-sm font-serif italic mb-10 opacity-70")}
+                         style={theme.accentColor ? { color: theme.accentColor } : {}}>
+                        antes del {format(new Date(data.rsvp.deadline + 'T12:00:00'), 'd \'de\' MMMM', { locale: es })}
+                      </p>
+                    )}
+                    {!data.rsvp?.deadline && (
+                      <p className={cn("text-sm font-serif italic mb-10 opacity-70")}
+                         style={theme.accentColor ? { color: theme.accentColor } : {}}>
+                        Por favor confirma lo antes posible
+                      </p>
+                    )}
                     <div className="flex justify-center">
                       <div className="scale-100 sm:scale-110 w-full sm:w-auto">
                         <InteractiveRSVP data={data} theme={theme} />
@@ -2160,14 +2169,23 @@ export function TraditionalTemplate({ data, isEditing, onUpdate }: { data: Invit
                 className={cn("text-4xl mb-4", !theme.accentColor && theme.accent)}
               />
               <p className="opacity-80 mb-2">Por favor confirma tu asistencia.</p>
-              <p className={cn("text-sm font-bold uppercase tracking-widest mb-8", !theme.accentColor && theme.accent)}
-                 style={theme.accentColor ? { color: theme.accentColor } : {}}>
-                Confirmar antes del 1 de septiembre
-              </p>
+              {data.rsvp?.deadline && (
+                <p className={cn("text-sm font-bold uppercase tracking-widest mb-8", !theme.accentColor && theme.accent)}
+                   style={theme.accentColor ? { color: theme.accentColor } : {}}>
+                  Confirmar antes del {format(new Date(data.rsvp.deadline + 'T12:00:00'), 'd \'de\' MMMM', { locale: es })}
+                </p>
+              )}
+              {!data.rsvp?.deadline && (
+                <p className={cn("text-sm font-bold uppercase tracking-widest mb-8", !theme.accentColor && theme.accent)}
+                   style={theme.accentColor ? { color: theme.accentColor } : {}}>
+                  Confirmar lo antes posible
+                </p>
+              )}
               <InteractiveRSVP data={data} theme={theme} />
             </>
           )}
         </motion.div>
+        )}
       </div>
       <div className="w-full relative z-10 bg-white/5 pb-10">
         <AdBanner />
