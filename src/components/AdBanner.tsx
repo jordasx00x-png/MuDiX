@@ -23,12 +23,23 @@ export function AdBanner({
   responsive = true,
 }: AdBannerProps) {
   useEffect(() => {
-    try {
-      const gads = (window as any).adsbygoogle || [];
-      gads.push({});
-    } catch (e) {
-      console.error('Google Ads error:', e);
-    }
+    const timer = setTimeout(() => {
+      try {
+        const adsbygoogle = (window as any).adsbygoogle || [];
+        // Check if there are any adsbygoogle elements that haven't been initialized yet
+        const elements = document.querySelectorAll('.adsbygoogle:not([data-adsbygoogle-status])');
+        if (elements.length > 0) {
+          adsbygoogle.push({});
+        }
+      } catch (e) {
+        // Only log if it's not the redundant push error
+        if (e instanceof Error && !e.message.includes('already have ads')) {
+          console.error('Google Ads error:', e);
+        }
+      }
+    }, 100); // Small delay to ensure DOM is ready
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
