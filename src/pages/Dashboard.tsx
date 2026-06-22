@@ -10,6 +10,7 @@ export default function Dashboard() {
   const { user, loading: authLoading } = useAuth();
   const [invitations, setInvitations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -32,14 +33,33 @@ export default function Dashboard() {
   }, [user]);
 
   const deleteInvitation = async (id: string) => {
+    if (deletingId !== id) {
+      setDeletingId(id);
+      toast.info('Haz clic en el icono de papelera de nuevo para confirmar la eliminación', {
+        duration: 3000,
+      });
+      // Reset after 3 seconds
+      setTimeout(() => setDeletingId(null), 3000);
+      return;
+    }
+
     try {
-      if (!window.confirm('¿Estás seguro de que deseas eliminar esta invitación?')) return;
-      
+      setLoading(true);
       await deleteDoc(doc(db, 'invitations', id));
+      
       setInvitations(invs => invs.filter(inv => inv.id !== id));
       toast.success('Invitación eliminada correctamente');
     } catch (error) {
-      handleFirestoreError(error, OperationType.DELETE, `invitations/${id}`);
+      console.error('Error deleting invitation:', error);
+      toast.error('No se pudo eliminar la invitación. Inténtalo de nuevo.');
+      try {
+        handleFirestoreError(error, OperationType.DELETE, `invitations/${id}`);
+      } catch (err) {
+        // Suppress thrown error
+      }
+    } finally {
+      setLoading(false);
+      setDeletingId(null);
     }
   };
 
@@ -154,8 +174,12 @@ export default function Dashboard() {
                       </Link>
                       <button 
                         onClick={() => deleteInvitation(inv.id)}
-                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Eliminar"
+                        className={`p-2 rounded-lg transition-all ${
+                          deletingId === inv.id 
+                            ? 'bg-red-600 text-white scale-110 shadow-lg ring-2 ring-red-200' 
+                            : 'text-gray-400 hover:text-red-600 hover:bg-red-50'
+                        }`}
+                        title={deletingId === inv.id ? "¡Haz clic para confirmar!" : "Eliminar"}
                       >
                         <Trash2 className="w-5 h-5" />
                       </button>
