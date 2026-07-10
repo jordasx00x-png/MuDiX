@@ -6,7 +6,7 @@ import { getTheme } from '../components/invitation/InvitationTemplate';
 import QRShare from '../components/invitation/QRShare';
 import { Save, Eye, LayoutTemplate, Settings, MapPin, Gift, List, Image as ImageIcon, Instagram, Upload, Share2, Copy, Check, ArrowLeft, Users, Plus, Trash2, Loader2, Palette, Type, Sparkles, X, QrCode, Download } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
-import { toJpeg } from 'html-to-image';
+import { toPng } from 'html-to-image';
 import { format, subDays } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
@@ -207,9 +207,14 @@ export default function Editor() {
   const handleDownloadQR = async () => {
     if (!qrRef.current || !qrGuestId) return;
     try {
-      const dataUrl = await toJpeg(qrRef.current, { quality: 0.95, pixelRatio: 3 });
+      // Use toPng for better quality with QR codes and text
+      const dataUrl = await toPng(qrRef.current, { 
+        quality: 1.0, 
+        pixelRatio: 4,
+        backgroundColor: '#fdfbf7' 
+      });
       const link = document.createElement('a');
-      link.download = `Pase-${data.guests?.find(g => g.id === qrGuestId)?.name || 'Invitado'}.jpg`;
+      link.download = `Pase-${data.guests?.find(g => g.id === qrGuestId)?.name || 'Invitado'}.png`;
       link.href = dataUrl;
       link.click();
       toast.success('Tarjeta descargada con éxito');
@@ -2213,84 +2218,83 @@ export default function Editor() {
               {/* This is the card to be captured */}
               <div 
                 ref={qrRef}
-                className="w-[380px] h-[600px] sm:w-[400px] sm:h-[650px] relative flex flex-col items-center flex-shrink-0 shadow-2xl bg-white overflow-hidden"
+                className="w-[360px] h-[640px] relative flex flex-col items-center flex-shrink-0 shadow-2xl bg-[#fdfbf7] overflow-hidden"
                 style={{ 
-                  backgroundColor: qrColor,
-                  backgroundImage: `linear-gradient(to bottom, color-mix(in srgb, ${qrColor} 10%, white) 0%, ${qrColor} 30%, color-mix(in srgb, ${qrColor} 40%, black) 100%)`
+                  backgroundColor: '#fdfbf7',
                 }}
               >
-                <div className="absolute inset-0 pt-8 pb-6 px-8 sm:px-10 flex flex-col items-center justify-between h-full bg-[#fdfbf7]">
+                <div className="absolute inset-0 p-8 flex flex-col items-center justify-between h-full border-[12px] border-transparent" style={{ borderColor: qrColor + '20' }}>
                   {/* Decorative Elements */}
-                  <div className="absolute top-3 left-3 right-3 bottom-3 border border-[#af9462]/30 pointer-events-none" />
-                  <div className="absolute top-5 left-5 right-5 bottom-5 border-2 border-[#af9462]/10 pointer-events-none" />
+                  <div className="absolute top-4 left-4 right-4 bottom-4 border border-[#af9462]/20 pointer-events-none" />
                   
                   {/* Header */}
-                  <div className="flex flex-col items-center w-full z-10">
-                    <p className="text-[10px] font-serif uppercase tracking-[0.4em] text-[#af9462] mb-2 drop-shadow-sm" style={{ fontFamily: 'Cinzel, serif' }}>
+                  <div className="flex flex-col items-center w-full z-10 pt-4">
+                    <p className="text-[10px] font-serif uppercase tracking-[0.4em] text-[#af9462] mb-3" style={{ fontFamily: 'Cinzel, serif' }}>
                       {data.title || 'NUESTRA BODA'}
                     </p>
-                    <p className="text-[32px] sm:text-[36px] text-[#2c2c2b] mb-2 leading-none text-center flex-shrink-0" style={{ fontFamily: 'Parisienne, cursive' }}>
+                    <p className="text-[30px] text-[#2c2c2b] mb-2 leading-tight text-center w-full px-2" style={{ fontFamily: 'Parisienne, cursive' }}>
                       {data.name || 'Ana & Carlos'}
                     </p>
-                    <div className="flex justify-center items-center gap-3 mb-4 opacity-40">
+                    <div className="flex justify-center items-center gap-3 opacity-30 mt-1">
                       <span className="w-8 h-px bg-[#af9462]"></span>
-                      <span className="w-1 h-1 rotate-45 border border-[#af9462] bg-[#fdfbf7]"></span>
+                      <span className="w-1 h-1 rotate-45 border border-[#af9462] bg-transparent"></span>
                       <span className="w-8 h-px bg-[#af9462]"></span>
                     </div>
                   </div>
 
                   {/* Main Action and QR */}
-                  <div className="flex flex-col items-center z-10 relative flex-1 justify-center w-full">
+                  <div className="flex flex-col items-center z-10 flex-1 justify-center w-full py-4">
                     
                     {qrGuestId && data.guests?.find(g => g.id === qrGuestId)?.name ? (
-                      <div className="mb-4 flex flex-col items-center">
-                        <p className="text-[9px] font-serif uppercase tracking-[0.3em] text-[#af9462]/80 mb-1 drop-shadow-sm" style={{ fontFamily: 'Cinzel, serif' }}>
+                      <div className="mb-6 flex flex-col items-center w-full">
+                        <p className="text-[8px] font-serif uppercase tracking-[0.3em] text-[#af9462]/80 mb-2" style={{ fontFamily: 'Cinzel, serif' }}>
                           RESERVADO PARA
                         </p>
                         <p 
-                           className="text-[18px] sm:text-[20px] text-[#2c2c2b] text-center italic break-words max-w-[300px]"
-                           style={{ fontFamily: 'Lora, serif', lineHeight: 1.2 }}
+                           className="text-[18px] text-[#2c2c2b] text-center italic leading-tight w-full px-4"
+                           style={{ fontFamily: 'Lora, serif' }}
                         >
                           {data.guests.find(g => g.id === qrGuestId)?.name}
                         </p>
                       </div>
-                    ) : (
-                      <div className="mb-2" />
-                    )}
+                    ) : null}
 
-                    <h2 
-                      className="text-[24px] sm:text-[28px] text-[#2c2c2b] text-center font-light leading-[1.2] mb-6"
-                      style={{ fontFamily: 'Playfair Display, serif', letterSpacing: '0.02em' }}
-                    >
-                      Te invitamos a<br/><span className="text-[14px] uppercase tracking-[0.2em] font-serif opacity-70" style={{ fontFamily: 'Cinzel, serif' }}>Escanear para ver</span><br/><span style={{ fontFamily: 'Parisienne, cursive' }} className="text-3xl text-[#af9462]">La Invitación</span>
-                    </h2>
+                    <div className="text-center mb-6">
+                      <p className="text-[18px] text-[#2c2c2b] font-light mb-1" style={{ fontFamily: 'Playfair Display, serif' }}>
+                        Te invitamos a
+                      </p>
+                      <p className="text-[10px] uppercase tracking-[0.2em] font-serif text-[#af9462] mb-1" style={{ fontFamily: 'Cinzel, serif' }}>
+                        Escanear para ver
+                      </p>
+                      <p style={{ fontFamily: 'Parisienne, cursive' }} className="text-2xl text-[#af9462]">
+                        La Invitación
+                      </p>
+                    </div>
 
-                    <div className="relative isolate">
-                      {/* Elegant drop shadow */}
-                      <div 
-                        className="absolute -inset-2 z-[-1] border border-[#af9462]/20 rounded-sm" 
+                    <div className="bg-white p-3 shadow-md border border-[#af9462]/10 rounded-sm">
+                      <QRCodeSVG 
+                        value={`${getPublicUrl()}?guest=${qrGuestId}`} 
+                        size={130}
+                        level="Q"
+                        includeMargin={false}
+                        fgColor="#2c2c2b"
                       />
-                      <div className="bg-white p-2 shadow-lg border border-[#af9462]/10">
-                        <QRCodeSVG 
-                          value={`${getPublicUrl()}?guest=${qrGuestId}`} 
-                          size={140}
-                          level="Q"
-                          includeMargin={false}
-                          fgColor="#2c2c2b"
-                        />
-                      </div>
                     </div>
                   </div>
 
                   {/* Footer Info */}
-                  <div className="w-full z-10 relative pt-2 flex flex-col items-center justify-end text-[#2c2c2b]">
-                    <div className="w-[50%] h-px bg-[#af9462]/30 mb-3" />
-                    
-                    <p className="text-[9px] font-serif font-bold uppercase tracking-[0.2em] text-[#af9462] text-center mb-1.5" style={{ fontFamily: 'Cinzel, serif' }}>
-                      CONFIRMAR ANTES DEL 1 DE SEPTIEMBRE
-                    </p>
+                  <div className="w-full z-10 flex flex-col items-center justify-end text-[#2c2c2b] pb-4">
+                    {data.rsvp?.deadline ? (
+                      <p className="text-[8px] font-serif font-bold uppercase tracking-[0.2em] text-[#af9462] text-center mb-4" style={{ fontFamily: 'Cinzel, serif' }}>
+                        CONFIRMAR ANTES DEL {format(new Date(data.rsvp.deadline + 'T12:00:00'), 'd \'DE\' MMMM', { locale: es }).toUpperCase()}
+                      </p>
+                    ) : (
+                      <p className="text-[8px] font-serif font-bold uppercase tracking-[0.2em] text-[#af9462] text-center mb-4" style={{ fontFamily: 'Cinzel, serif' }}>
+                        FAVOR DE CONFIRMAR ASISTENCIA
+                      </p>
+                    )}
                       
-                    <div className="flex flex-col items-center w-full">
+                    <div className="flex flex-col items-center w-full gap-2">
                       {(() => {
                         const guest = data.guests?.find(g => g.id === qrGuestId);
                         if (!guest) return null;
@@ -2298,14 +2302,14 @@ export default function Editor() {
                         return (
                           <>
                             {(guest.tableNumber !== undefined && guest.tableNumber !== null && guest.tableNumber !== '') && (
-                              <p className="text-[13px] font-serif font-bold tracking-[0.2em] text-[#2c2c2b] mb-2 text-center uppercase" style={{ fontFamily: 'Cinzel, serif' }}>
+                              <p className="text-[12px] font-serif font-bold tracking-[0.2em] text-[#2c2c2b] text-center uppercase" style={{ fontFamily: 'Cinzel, serif' }}>
                                 - MESA {guest.tableNumber} -
                               </p>
                             )}
                             
                             <div className="flex gap-4 items-center justify-center">
                                {guest.tickets !== undefined && (
-                                <p className="text-[12px] font-serif font-bold tracking-[0.1em] text-[#2c2c2b] px-4 py-1.5 border border-[#af9462]/40 whitespace-nowrap bg-white/60 shadow-sm" style={{ fontFamily: 'Cinzel, serif' }}>
+                                <p className="text-[11px] font-serif font-bold tracking-[0.1em] text-[#2c2c2b] px-5 py-2 border border-[#af9462]/30 bg-white shadow-sm" style={{ fontFamily: 'Cinzel, serif' }}>
                                   {guest.tickets === 0 
                                     ? 'ENTRADA LIBRE' 
                                     : `${guest.tickets || 1} PASE${(guest.tickets || 1) !== 1 ? 'S' : ''}`}
