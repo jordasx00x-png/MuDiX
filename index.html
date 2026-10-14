@@ -1,13 +1,33 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
+    <title>MuDiX - Invitaciones Digitales</title>
+    <script type="text/javascript">
+      // Single Page Apps for GitHub Pages redirection support
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).reduce(function(acc, s) {
+            var pair = s.split('=');
+            acc[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+            return acc;
+          }, {});
+          if (decoded.p !== undefined) {
+            window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + (decoded.p || '') +
+              (decoded.q ? ('?' + decoded.q) : '') +
+              l.hash
+            );
+          }
+        }
+      }(window.location))
+    </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-
