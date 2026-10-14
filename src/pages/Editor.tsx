@@ -2218,108 +2218,105 @@ export default function Editor() {
               {/* This is the card to be captured */}
               <div 
                 ref={qrRef}
-                className="w-[360px] h-[640px] relative flex flex-col items-center flex-shrink-0 shadow-2xl bg-[#fdfbf7] overflow-hidden"
+                className="w-[380px] min-h-[670px] relative flex flex-col items-center flex-shrink-0 shadow-2xl bg-[#fdfbf7] p-8 box-border"
                 style={{ 
                   backgroundColor: '#fdfbf7',
                 }}
               >
-                <div className="absolute inset-0 p-8 flex flex-col items-center justify-between h-full border-[12px] border-transparent" style={{ borderColor: qrColor + '20' }}>
-                  {/* Decorative Elements */}
-                  <div className="absolute top-4 left-4 right-4 bottom-4 border border-[#af9462]/20 pointer-events-none" />
-                  
-                  {/* Header */}
-                  <div className="flex flex-col items-center w-full z-10 pt-4">
-                    <p className="text-[10px] font-serif uppercase tracking-[0.4em] text-[#af9462] mb-3" style={{ fontFamily: 'Cinzel, serif' }}>
-                      {data.title || 'NUESTRA BODA'}
-                    </p>
-                    <p className="text-[30px] text-[#2c2c2b] mb-2 leading-tight text-center w-full px-2" style={{ fontFamily: 'Parisienne, cursive' }}>
-                      {data.name || 'Ana & Carlos'}
-                    </p>
-                    <div className="flex justify-center items-center gap-3 opacity-30 mt-1">
-                      <span className="w-8 h-px bg-[#af9462]"></span>
-                      <span className="w-1 h-1 rotate-45 border border-[#af9462] bg-transparent"></span>
-                      <span className="w-8 h-px bg-[#af9462]"></span>
+                <div className="absolute inset-4 border border-[#af9462]/30 pointer-events-none" />
+                <div className="absolute inset-0 border-[10px] border-transparent pointer-events-none" style={{ borderColor: qrColor + '15' }} />
+                
+                {/* Header */}
+                <div className="flex flex-col items-center w-full z-10 pt-2 mb-4">
+                  <p className="text-[10px] font-serif uppercase tracking-[0.4em] text-[#af9462] mb-2" style={{ fontFamily: 'Cinzel, serif' }}>
+                    {data.title || 'NUESTRA BODA'}
+                  </p>
+                  <p className="text-[28px] text-[#2c2c2b] mb-2 leading-tight text-center w-full px-2 font-bold" style={{ fontFamily: 'Parisienne, cursive' }}>
+                    {data.name || 'Ana & Carlos'}
+                  </p>
+                  <div className="flex justify-center items-center gap-3 opacity-30 mt-1">
+                    <span className="w-8 h-px bg-[#af9462]"></span>
+                    <span className="w-1 h-1 rotate-45 border border-[#af9462] bg-transparent"></span>
+                    <span className="w-8 h-px bg-[#af9462]"></span>
+                  </div>
+                </div>
+
+                {/* Main Action and QR */}
+                <div className="flex flex-col items-center z-10 w-full my-auto py-2">
+                  {qrGuestId && data.guests?.find(g => g.id === qrGuestId)?.name ? (
+                    <div className="mb-4 flex flex-col items-center w-full bg-[#af9462]/5 py-2 px-4 rounded border border-[#af9462]/20">
+                      <p className="text-[8px] font-serif uppercase tracking-[0.3em] text-[#af9462] mb-1" style={{ fontFamily: 'Cinzel, serif' }}>
+                        RESERVADO PARA
+                      </p>
+                      <p 
+                         className="text-[16px] text-[#2c2c2b] text-center italic font-semibold leading-tight w-full px-2"
+                         style={{ fontFamily: 'Lora, serif' }}
+                      >
+                        {data.guests.find(g => g.id === qrGuestId)?.name}
+                      </p>
                     </div>
+                  ) : null}
+
+                  <div className="text-center mb-4">
+                    <p className="text-[15px] text-[#2c2c2b] font-light mb-0.5" style={{ fontFamily: 'Playfair Display, serif' }}>
+                      Te invitamos a
+                    </p>
+                    <p className="text-[9px] uppercase tracking-[0.2em] font-serif text-[#af9462] mb-0.5" style={{ fontFamily: 'Cinzel, serif' }}>
+                      Escanear para ver
+                    </p>
+                    <p style={{ fontFamily: 'Parisienne, cursive' }} className="text-xl text-[#af9462]">
+                      La Invitación
+                    </p>
                   </div>
 
-                  {/* Main Action and QR */}
-                  <div className="flex flex-col items-center z-10 flex-1 justify-center w-full py-4">
+                  <div className="bg-white p-3 shadow-md border border-[#af9462]/20 rounded-sm">
+                    <QRCodeSVG 
+                      value={`${getPublicUrl()}?guest=${qrGuestId}`} 
+                      size={120}
+                      level="Q"
+                      includeMargin={false}
+                      fgColor="#2c2c2b"
+                    />
+                  </div>
+                </div>
+
+                {/* Footer Info */}
+                <div className="w-full z-10 flex flex-col items-center justify-end text-[#2c2c2b] pt-2 pb-2">
+                  {data.rsvp?.deadline ? (
+                    <p className="text-[8px] font-serif font-bold uppercase tracking-[0.2em] text-[#af9462] text-center mb-3" style={{ fontFamily: 'Cinzel, serif' }}>
+                      CONFIRMAR ANTES DEL {format(new Date(data.rsvp.deadline + 'T12:00:00'), 'd \'DE\' MMMM', { locale: es }).toUpperCase()}
+                    </p>
+                  ) : (
+                    <p className="text-[8px] font-serif font-bold uppercase tracking-[0.2em] text-[#af9462] text-center mb-3" style={{ fontFamily: 'Cinzel, serif' }}>
+                      FAVOR DE CONFIRMAR ASISTENCIA
+                    </p>
+                  )}
                     
-                    {qrGuestId && data.guests?.find(g => g.id === qrGuestId)?.name ? (
-                      <div className="mb-6 flex flex-col items-center w-full">
-                        <p className="text-[8px] font-serif uppercase tracking-[0.3em] text-[#af9462]/80 mb-2" style={{ fontFamily: 'Cinzel, serif' }}>
-                          RESERVADO PARA
-                        </p>
-                        <p 
-                           className="text-[18px] text-[#2c2c2b] text-center italic leading-tight w-full px-4"
-                           style={{ fontFamily: 'Lora, serif' }}
-                        >
-                          {data.guests.find(g => g.id === qrGuestId)?.name}
-                        </p>
-                      </div>
-                    ) : null}
-
-                    <div className="text-center mb-6">
-                      <p className="text-[18px] text-[#2c2c2b] font-light mb-1" style={{ fontFamily: 'Playfair Display, serif' }}>
-                        Te invitamos a
-                      </p>
-                      <p className="text-[10px] uppercase tracking-[0.2em] font-serif text-[#af9462] mb-1" style={{ fontFamily: 'Cinzel, serif' }}>
-                        Escanear para ver
-                      </p>
-                      <p style={{ fontFamily: 'Parisienne, cursive' }} className="text-2xl text-[#af9462]">
-                        La Invitación
-                      </p>
-                    </div>
-
-                    <div className="bg-white p-3 shadow-md border border-[#af9462]/10 rounded-sm">
-                      <QRCodeSVG 
-                        value={`${getPublicUrl()}?guest=${qrGuestId}`} 
-                        size={130}
-                        level="Q"
-                        includeMargin={false}
-                        fgColor="#2c2c2b"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Footer Info */}
-                  <div className="w-full z-10 flex flex-col items-center justify-end text-[#2c2c2b] pb-4">
-                    {data.rsvp?.deadline ? (
-                      <p className="text-[8px] font-serif font-bold uppercase tracking-[0.2em] text-[#af9462] text-center mb-4" style={{ fontFamily: 'Cinzel, serif' }}>
-                        CONFIRMAR ANTES DEL {format(new Date(data.rsvp.deadline + 'T12:00:00'), 'd \'DE\' MMMM', { locale: es }).toUpperCase()}
-                      </p>
-                    ) : (
-                      <p className="text-[8px] font-serif font-bold uppercase tracking-[0.2em] text-[#af9462] text-center mb-4" style={{ fontFamily: 'Cinzel, serif' }}>
-                        FAVOR DE CONFIRMAR ASISTENCIA
-                      </p>
-                    )}
+                  <div className="flex flex-col items-center w-full gap-2">
+                    {(() => {
+                      const guest = data.guests?.find(g => g.id === qrGuestId);
+                      if (!guest) return null;
                       
-                    <div className="flex flex-col items-center w-full gap-2">
-                      {(() => {
-                        const guest = data.guests?.find(g => g.id === qrGuestId);
-                        if (!guest) return null;
-                        
-                        return (
-                          <>
-                            {(guest.tableNumber !== undefined && guest.tableNumber !== null && guest.tableNumber !== '') && (
-                              <p className="text-[12px] font-serif font-bold tracking-[0.2em] text-[#2c2c2b] text-center uppercase" style={{ fontFamily: 'Cinzel, serif' }}>
-                                - MESA {guest.tableNumber} -
+                      return (
+                        <>
+                          {(guest.tableNumber !== undefined && guest.tableNumber !== null && guest.tableNumber !== '') && (
+                            <p className="text-[11px] font-serif font-bold tracking-[0.2em] text-[#2c2c2b] text-center uppercase" style={{ fontFamily: 'Cinzel, serif' }}>
+                              - MESA {guest.tableNumber} -
+                            </p>
+                          )}
+                          
+                          <div className="flex gap-4 items-center justify-center">
+                             {guest.tickets !== undefined && (
+                              <p className="text-[10px] font-serif font-bold tracking-[0.1em] text-[#2c2c2b] px-4 py-1.5 border border-[#af9462]/30 bg-white shadow-sm" style={{ fontFamily: 'Cinzel, serif' }}>
+                                {guest.tickets === 0 
+                                  ? 'ENTRADA LIBRE' 
+                                  : `${guest.tickets || 1} PASE${(guest.tickets || 1) !== 1 ? 'S' : ''}`}
                               </p>
-                            )}
-                            
-                            <div className="flex gap-4 items-center justify-center">
-                               {guest.tickets !== undefined && (
-                                <p className="text-[11px] font-serif font-bold tracking-[0.1em] text-[#2c2c2b] px-5 py-2 border border-[#af9462]/30 bg-white shadow-sm" style={{ fontFamily: 'Cinzel, serif' }}>
-                                  {guest.tickets === 0 
-                                    ? 'ENTRADA LIBRE' 
-                                    : `${guest.tickets || 1} PASE${(guest.tickets || 1) !== 1 ? 'S' : ''}`}
-                                </p>
-                               )}
-                            </div>
-                          </>
-                        );
-                      })()}
-                    </div>
+                             )}
+                          </div>
+                        </>
+                      );
+                    })()}
                   </div>
                 </div>
               </div>

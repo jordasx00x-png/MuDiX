@@ -1,5 +1,5 @@
 import { app } from './firebase-config';
-import { auth, googleProvider, signInWithPopup, onAuthStateChanged, User } from './firebase-auth';
+import { auth, googleProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInAnonymously, signOut, onAuthStateChanged, User } from './firebase-auth';
 import { db, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, where, getDocs, onSnapshot, getDocFromServer, FirestoreError } from './firebase-firestore';
 
 export { app, auth, googleProvider, db };
@@ -74,6 +74,6 @@ export async function testConnection() {
 }
 
 export { 
-  doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, where, getDocs, onSnapshot, signInWithPopup, onAuthStateChanged 
+  doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, where, getDocs, onSnapshot, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInAnonymously, signOut, onAuthStateChanged 
 };
 export type { User, FirestoreError };
