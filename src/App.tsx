@@ -17,7 +17,7 @@ import { Toaster } from 'sonner';
 export default function App() {
   return (
     <ErrorBoundary>
-      <Router>
+      <Router basename={import.meta.env.BASE_URL}>
         <Toaster position="top-center" richColors />
         <Routes>
           <Route path="/" element={<AuthProvider><Landing /></AuthProvider>} />
