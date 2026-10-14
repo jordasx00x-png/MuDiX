@@ -1,80 +1,103 @@
 import { motion } from "motion/react";
-import { CheckCircle2, Wand2 } from "lucide-react";
+import { CheckCircle2, Wand2, Sparkles, ArrowRight, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Hero() {
   return (
-    <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-50 to-white opacity-90" />
-        <img
-          src="https://picsum.photos/seed/eventos/1920/1080?blur=2"
-          alt="Fondo de eventos"
-          className="w-full h-full object-cover opacity-20"
-          referrerPolicy="no-referrer"
-        />
-      </div>
+    <section className="relative pt-36 pb-24 lg:pt-52 lg:pb-36 overflow-hidden bg-gradient-to-b from-primary-50/50 via-white to-white">
+      {/* Dynamic Glow Background Blobs */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-300/20 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="absolute top-1/3 right-10 w-[400px] h-[400px] bg-pink-300/20 rounded-full blur-[100px] pointer-events-none -z-10" />
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-3xl mx-auto text-center">
+        <div className="max-w-4xl mx-auto text-center">
+          
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100/80 border border-primary-200 text-primary-700 text-sm font-medium mb-8 shadow-sm backdrop-blur-md"
+          >
+            <Sparkles className="w-4 h-4 text-primary-600 animate-pulse" />
+            <span>La nueva era de invitaciones digitales inteligentes</span>
+          </motion.div>
+
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight"
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-5xl md:text-7xl lg:text-8xl font-black text-gray-900 mb-8 tracking-tight leading-[1.1]"
           >
             Crea tu invitación digital para{" "}
-            <span className="text-primary-600">cualquier evento</span>
+            <span className="bg-gradient-to-r from-primary-600 via-rose-500 to-purple-600 bg-clip-text text-transparent">
+              cualquier evento
+            </span>
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-xl md:text-2xl text-gray-600 mb-10"
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-xl md:text-2xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed font-normal"
           >
-            Diseña, organiza y controla tu evento desde una sola invitación
-            digital.
+            Diseña, comparte y organiza tu evento con música, confirmación de asistencia en tiempo real y estilo impecable.
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
           >
             <Link
               to="/select-template"
-              className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-primary-600 rounded-full hover:bg-primary-700 transition-colors shadow-lg hover:shadow-xl w-full sm:w-auto"
+              className="group relative inline-flex items-center justify-center px-9 py-4 text-lg font-semibold text-white bg-gradient-to-r from-primary-600 to-rose-600 rounded-2xl hover:from-primary-700 hover:to-rose-700 transition-all duration-300 shadow-xl shadow-primary-500/25 hover:shadow-2xl hover:shadow-primary-500/40 hover:-translate-y-0.5 w-full sm:w-auto"
             >
-              <Wand2 className="w-5 h-5 mr-2" />
-              Crear mi invitación
+              <Wand2 className="w-5 h-5 mr-3 group-hover:rotate-12 transition-transform" />
+              <span>Crear mi invitación</span>
+              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>
+            <a
+              to="#muestras"
+              href="#muestras"
+              className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-gray-700 bg-white/80 hover:bg-white rounded-2xl border border-gray-200 hover:border-gray-300 transition-all duration-300 shadow-sm hover:shadow-md w-full sm:w-auto backdrop-blur-md"
+            >
+              Ver ejemplos
+            </a>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="grid sm:grid-cols-3 gap-6 text-left"
+            className="grid sm:grid-cols-3 gap-6 text-left max-w-3xl mx-auto bg-white/60 backdrop-blur-xl p-8 rounded-3xl border border-white/80 shadow-xl shadow-gray-200/50"
           >
-            <div className="flex items-start">
-              <CheckCircle2 className="w-6 h-6 text-primary-500 mr-3 shrink-0" />
-              <p className="text-gray-700">
-                Crea tu invitación digital a tu gusto
-              </p>
+            <div className="flex items-start space-x-3">
+              <div className="p-2 rounded-xl bg-primary-100 text-primary-600 shrink-0">
+                <CheckCircle2 className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900">100% Personalizable</h3>
+                <p className="text-sm text-gray-500 mt-0.5">Colores, música y tipografías a tu gusto.</p>
+              </div>
             </div>
-            <div className="flex items-start">
-              <CheckCircle2 className="w-6 h-6 text-primary-500 mr-3 shrink-0" />
-              <p className="text-gray-700">
-                Lista para compartir con tus invitados
-              </p>
+            <div className="flex items-start space-x-3">
+              <div className="p-2 rounded-xl bg-rose-100 text-rose-600 shrink-0">
+                <Heart className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900">Lista para Compartir</h3>
+                <p className="text-sm text-gray-500 mt-0.5">Enlace directo por WhatsApp y redes.</p>
+              </div>
             </div>
-            <div className="flex items-start">
-              <CheckCircle2 className="w-6 h-6 text-primary-500 mr-3 shrink-0" />
-              <p className="text-gray-700">
-                Control de confirmación en tiempo real
-              </p>
+            <div className="flex items-start space-x-3">
+              <div className="p-2 rounded-xl bg-purple-100 text-purple-600 shrink-0">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900">RSVP en Vivo</h3>
+                <p className="text-sm text-gray-500 mt-0.5">Control de invitados y confirmaciones.</p>
+              </div>
             </div>
           </motion.div>
         </div>
